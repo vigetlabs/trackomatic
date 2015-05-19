@@ -52,13 +52,23 @@ function Trackomatic(tracker, config) {
   // Data attribute tracking
     //Decorate all links containing data attribute
 
-  // Javascript errors
+  // Javascript error tracking with message and line number
   // Should use exception tracking in next version: https://developers.google.com/analytics/devguides/collection/analyticsjs/exceptions
-  var ie = window.event || {},
-  errMsg = e.message || ie.errorMessage;
-  var errSrc = (e.filename || ie.errorUrl) + ': ' + (e.lineno || ie.errorLine);
-  ga('send', 'event', 'Javascript Error', errMsg, errSrc, { 'nonInteraction': 1 });
-  };
+  // Would also be worth sampling + throttling
+  function trackJavaScriptError(e) {
+    var errMsg = e.message;
+    var errSrc = e.filename + ': ' + e.lineno;
+    ga('send', 'event', 'JavaScript Error', errMsg, errSrc, { 'nonInteraction': 1 });
+  }
+  
+  // an attempt at making this cross-browser compatible
+  if (window.addEventListener) {
+    window.addEventListener('error', trackJavaScriptError, false);
+  } else if (window.attachEvent) {
+    window.attachEvent('onerror', trackJavaScriptError);
+  } else {
+    window.onerror = trackJavaScriptError;
+  }
 
   // Scroll tracking
 

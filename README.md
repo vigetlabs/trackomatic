@@ -36,6 +36,16 @@ ga('send', 'pageview');
 
 ### Social Tracking
 
+## Configuration
+
+Trackomatic accepts parameters to customize its tracking. Configuration parameters are passed as a configuration object when you initialize a plugin instance.
+
+```javascript
+ga('create', 'UA-XXXXX-Y', 'auto');
+ga('require', 'trackomatic', {files: '/log', debug: true});
+ga('send', 'pageview');
+````
+
 ## Public Functions
 Trackomatic.js makes certain internal utility functions public by way of the global trackomatic object. The following functions are available under trackomatic.util:
 
@@ -46,12 +56,3 @@ Trackomatic.js makes certain internal utility functions public by way of the glo
 - proper
 - slugify
 
-## Configuration
-
-Trackomatic accepts parameters to customize its tracking. Configuration parameters are passed as a configuration object when you initialize a plugin instance.
-
-```javascript
-ga('create', 'UA-XXXXX-Y', 'auto');
-ga('require', 'trackomatic', {files: '/log', debug: true});
-ga('send', 'pageview');
-````
