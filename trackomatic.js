@@ -23,6 +23,7 @@ function providePlugin(pluginName, pluginConstructor) {
 }
 
 // Plugin constructor.
+//Everything takes place inside this.
 function Trackomatic(tracker, config) {
   
   // Sanity check
@@ -31,7 +32,7 @@ function Trackomatic(tracker, config) {
   // Set defaults
   
     //Check for the trackomatic object globally; instantiate a local one if it's not set.
-  window.trackomatic = window.trackomatic || {};  
+    window._trackomatic = window._trackomatic || {};  
   
   // Will need to define Optimizely object here one day
 
@@ -123,20 +124,20 @@ function Trackomatic(tracker, config) {
       });
       return map;
     } ());
+    
+    //Sharing is caring
+    _trackomatic.util = {
+      createCookie: createCookie, 
+      readCookie: readCookie,
+      getURLParam: get,
+      getPathname: getPathname,
+      proper: proper,
+      slugify: slugify
+    };
+
+    _trackomatic.data = {};
 
 }
-
-//Sharing is caring
-trackomatic.util = {
-  createCookie: createCookie, 
-  readCookie: readCookie,
-  getURLParam: get,
-  getPathname: getPathname,
-  proper: proper,
-  slugify: slugify
-};
-
-trackomatic.data = {};
 
 // Register the plugin.
 providePlugin('trackomatic', Trackomatic);
