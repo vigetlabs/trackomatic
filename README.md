@@ -1,4 +1,4 @@
-# Trackomatic.js: Automatic Google Analytics Tracking
+# Trackomatic: Automatic Google Analytics Tracking
 
 ## About
 
@@ -8,7 +8,7 @@ Note: Trackomatic.js is only compatible with Universal Analytics (analytics.js),
 
 ## Installation
 
-To use trackomatic.js, simply load trackomatic.js on your site and configure it as a plugin in your existing Google Analytics snippet. If you have installed GA through Google Tag Manager, you'll have to set a custom field.
+To use Trackomatic, simply load trackomatic.js on your site and configure it as a plugin in your existing Google Analytics snippet. If you have installed GA through Google Tag Manager, you'll have to set a custom field.
 
 ```javascript
 ga('create', 'UA-XXXXX-Y', 'auto');
@@ -16,26 +16,27 @@ ga('require', 'trackomatic');
 ga('send', 'pageview');
 ````
 
-
-
 ## Features
 
-### Events
-
-### Ecommerce
+### Ecommerce tracking
 
 ### Events
+- JS errors
+
+To add:
 - Form submits
 - File clicks
-- JS errors
 - Site exits
 - Social media clicks
+- Scroll tracking
 
 ### Custom Variables
 - Viewport dimensions
 - Optimizely experiments
 
 ### Social Tracking
+
+
 
 ## Configuration
 
@@ -56,4 +57,4 @@ Trackomatic.js makes certain internal utility functions public by way of the glo
 - getPathname
 - proper
 - slugify
-
+- debounce
