@@ -198,7 +198,7 @@ function Trackomatic(tracker, config) {
     } ());
     
     // debounce: practice safe javascript
-  var debounce = function(func, wait, immediate) {
+  function debounce(func, wait, immediate) {
     var timeout
     return function() {
       var context = this, args = arguments
@@ -214,7 +214,7 @@ function Trackomatic(tracker, config) {
   }
   
   // getViewportSize: does exactly what it says on the tin
-  var getViewportSize = function() {
+  function getViewportSize() {
     if (typeof window.innerWidth !== 'undefined') {
     return {
       width  : window.innerWidth,
