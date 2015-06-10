@@ -174,8 +174,13 @@ function Trackomatic(tracker, config) {
     }
     
     // slugify: Turns strings into slugs. Useful for combining inconsistent data sources.
-    function slugify() {
-          return Text.toLowerCase().replace(/[^\w ]+/g,'').replace(/ +/g,'-');
+    function slugify(text) {
+      return text.toString().toLowerCase()
+      .replace(/\s+/g, '-')           // Replace spaces with -
+      .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+      .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+      .replace(/^-+/, '')             // Trim - from start of text
+      .replace(/-+$/, '');            // Trim - from end of text
     }
 
     // shortest readCookie and createCookie functions imaginable
