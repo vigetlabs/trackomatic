@@ -22,17 +22,20 @@ function providePlugin(pluginName, pluginConstructor) {
   if (ga) ga('provide', pluginName, pluginConstructor);
 }
 
+  //Check for the trackomatic object globally; instantiate a local one if it's not set.
+  window._trackomatic = window._trackomatic || {};
+
 // Plugin constructor.
 //Everything takes place inside this.
 function Trackomatic(tracker, config) {
-  
+
   // Sanity check
   console.log('Loaded trackomatic on tracker ' + tracker.get('name'));
   
-  // Set defaults
+  //Get tracker so that we pass info to the correct account
+  this.tracker = tracker;
   
-    //Check for the trackomatic object globally; instantiate a local one if it's not set.
-    window._trackomatic = window._trackomatic || {};  
+  // Set defaults
   
   // Will need to define Optimizely object here one day
   var optimizely = optimizely || [];
@@ -69,64 +72,68 @@ function Trackomatic(tracker, config) {
 		if (oldonerror) {
 			oldonerror.apply(this, arguments );
 		}
-		ga('send', 'event', 'JavaScript Error', msg, url + '_' + line, 0, { 'nonInteraction': 1 });
+		tracker.send('event', 'FED JavaScript Error', msg, url + '_' + line, 0, { 'nonInteraction': 1 });
 	};
 
   // Viewport tracking
-  var viewportSize = getViewportSize()
-
+  var viewportSize = getViewportSize();
+  var viewportRatio = (viewportSize.width / viewportSize.height).toPrecision(2);
+  var simpleviewportSize = viewportSize.width + "x" + viewportSize.height
   dataLayer.push({
     'fed-viewportwidth'  : viewportSize.width,
     'fed-viewportheight' : viewportSize.height,
-    'fed-viewportratio'  : (viewportSize.width / viewportSize.height).toPrecision(2)
-  })  
-
+    'fed-viewportratio'  : viewportRatio
+  });
+  tracker.send('event', 'FED Viewport Size', simpleviewportSize, viewportRatio, 0, { 'nonInteraction': 1 });
+  
   // Resizing tracking
   var diffDimensions = function() {
-    var newSize = getViewportSize()
-    var event   = {}
+    var newSize = getViewportSize();
+    var event   = {};
     if (newSize.height > viewportSize.height) {
-    event['fed-resize-height'] = 'taller'
+    event['fed-resize-height'] = 'taller';
     } else if (newSize.height < viewportSize.height) {
-    event['fed-resize-height'] = 'shorter'
+    event['fed-resize-height'] = 'shorter';
     }
     if (newSize.width > viewportSize.width) {
-    event['fed-resize-width'] = 'wider'
+    event['fed-resize-width'] = 'wider';
     } else if (newSize.width < viewportSize.width) {
-    event['fed-resize-width'] = 'narrower'
+    event['fed-resize-width'] = 'narrower';
     }
-    viewportSize = newSize
-    dataLayer.push(event)
+    viewportSize = newSize;
+    dataLayer.push(event);
+    tracker.send('event', 'FED Window Resize', event, '', 0, { 'nonInteraction': 1 });
   }
 
   if (window.addEventListener) {
-    window.addEventListener('resize', debounce(diffDimensions, 1000))
-    window.addEventListener('orientationchange', debounce(diffDimensions, 1000))
+    window.addEventListener('resize', debounce(diffDimensions, 1000));
+    window.addEventListener('orientationchange', debounce(diffDimensions, 1000));
   }  
   
   
   // Input method tracking
 
-  var firstInputRecorded = false
-  var mouseEvent         = 'mousedown'
+  var firstInputRecorded = false;
+  var mouseEvent         = 'mousedown';
   var nonViewKeys        = {
     space    : 32,
     up       : 38,
     down     : 40,
     pageup   : 33,
     pagedown : 34
-  }
-  var recordInput        = function(type) {
+  };
+  var recordInput        = function(type, keyCode) {
     if (!firstInputRecorded) {
-    dataLayer.push({ 'fed-firstinput': type })
-    firstInputRecorded = true
+    dataLayer.push({ 'fed-firstinput': type });
+    tracker.send('event', 'FED First Input', type, event.keyCode||"none", 0, { 'nonInteraction': 1 });
+    firstInputRecorded = true;
     }
   }
 
   if (window.PointerEvent) {
     mouseEvent = 'pointerdown'
   } else if (window.MSPointerEvent) {
-    mouseEvent = 'MSPointerDown'
+    mouseEvent = 'MSPointerDown';
   }
 
   window.addEventListener('keydown', function(event) {
@@ -136,22 +143,23 @@ function Trackomatic(tracker, config) {
     if (event.metaKey || event.ctrlKey || event.altKey) nonViewKey = false
     for (key in nonViewKeys) {
     if (event.keyCode === nonViewKeys[key]) {
-      nonViewKey = false
+      nonViewKey = false;
     }
     }
     if (nonViewKey) {
     if (!firstInputRecorded) dataLayer.push({'fed-firstkeycode': event.keyCode})
-    recordInput('keyboard')
+    var keyCode = event.keyCode;
+    recordInput('keyboard', keyCode);
     }
-  })
+  });
 
   window.addEventListener('touchstart', function() {
-    recordInput('touch')
-  })
+    recordInput('touch');
+  });
 
   window.addEventListener(mouseEvent, function() {
-    recordInput('mouse')
-  })
+    recordInput('mouse');
+  });
   
   // Utility functions
 
