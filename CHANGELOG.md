@@ -2,7 +2,14 @@
 
 Do not forget to tag each release!
 
-## 0.1.1 (current)
+## 0.1.2 (current)
+- Added experimental utm stripping
+
+```
+Uglified : 12kb
+```
+
+## 0.1.1
 - Added changelog.md and contributing.md documents
 - Better js error tracking
 - FED tracking from Doug Avery: viewport and entry method tracking

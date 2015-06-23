@@ -22,6 +22,8 @@ ga('send', 'pageview');
 
 ### Events
 - JS errors
+- Viewport dimensions
+- Viewport change
 
 To add:
 - Form submits
@@ -31,14 +33,16 @@ To add:
 - Scroll tracking
 
 ### Custom Variables
-- Viewport dimensions
+
+To add:
 - Optimizely experiments
 
 ### Social Tracking
 
+### Misc. Tools
+On modern browsers, Trackomatic will strip utm parameters to avoid misattribution.
 
-
-## Configuration
+## Configuration (not yet implemented)
 
 Trackomatic accepts parameters to customize its tracking. Configuration parameters are passed as a configuration object when you initialize a plugin instance.
 
