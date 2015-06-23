@@ -32,9 +32,6 @@ function Trackomatic(tracker, config) {
   // Sanity check
   console.log("Loaded trackomatic on tracker " + tracker.get('name') + " with the config object " + JSON.stringify(config));
   _trackomatic.config=config;
-  docReady(function() {
-    console.log("document loaded!")
-  });
   
   //Get tracker so that we pass info to the correct account
   this.tracker = tracker;
@@ -335,6 +332,10 @@ function Trackomatic(tracker, config) {
   })("docReady", window);
   // modify this previous line to pass in your own method name 
   // and object for the method to be attached to
+  
+  docReady(function() {
+    console.log("document loaded!");
+  });
 
     // Sharing is caring - these functions are now public
     _trackomatic.util = {
