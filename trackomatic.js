@@ -334,33 +334,33 @@ function Trackomatic(tracker, config) {
   
     // Outbound click tracking
     (function() {
-		var links       = document.querySelectorAll('a')
-		var eventMethod = document.addEventListener ? 'addEventListener' : 'attachEvent'
+    var links       = document.querySelectorAll('a')
+    var eventMethod = document.addEventListener ? 'addEventListener' : 'attachEvent'
 
-		var visit = function(url) {
-		return function() {
-		  tracker.send('event', 'Site Exit', getElem(url).hostname, url, {'hitCallback': followLink});
-		  setTimeout(followLink, 100);
-		  function followLink() {window.location = url;}
-		}
-		}
+    var visit = function(url) {
+    return function() {
+      tracker.send('event', 'Site Exit', getElem(url).hostname, url, {'hitCallback': followLink});
+      setTimeout(followLink, 100);
+      function followLink() {window.location = url;}
+    }
+    }
 
-		var track = function(event) {
-			var differentHost = this.host !== window.location.host
-			var metaKey       = event.ctrlKey || event.metaKey || event.altKey
-			var rightClick    = event.which === 3
+    var track = function(event) {
+      var differentHost = this.host !== window.location.host
+      var metaKey       = event.ctrlKey || event.metaKey || event.altKey
+      var rightClick    = event.which === 3
 
-			if (differentHost && !rightClick) {
-			  ga('send', 'event', 'Outbound', 'click', this.href, {'hitCallback': visit(this.href)})
-			  if (!metaKey) {
-			  (event.preventDefault) ? event.preventDefault() : event.returnValue = false
-			  }
-			}
-		}
+      if (differentHost && !rightClick) {
+        ga('send', 'event', 'Outbound', 'click', this.href, {'hitCallback': visit(this.href)})
+        if (!metaKey) {
+        (event.preventDefault) ? event.preventDefault() : event.returnValue = false
+        }
+      }
+    }
 
-		for (var i = 0; i < links.length; i++) {
-			links[i][eventMethod]('click', track)
-		}
+    for (var i = 0; i < links.length; i++) {
+      links[i][eventMethod]('click', track)
+    }
     })();
     
     // File click tracking
