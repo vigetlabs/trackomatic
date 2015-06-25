@@ -31,10 +31,6 @@ function Trackomatic(tracker, config) {
 
   // Sanity check
   console.log("Loaded trackomatic on tracker " + tracker.get('name') + " with the config object " + JSON.stringify(config));
-  _trackomatic.config=config;
-  
-  //Get tracker so that we pass info to the correct account
-  this.tracker = tracker;
   
   // Set defaults
   
@@ -333,8 +329,43 @@ function Trackomatic(tracker, config) {
   // modify this previous line to pass in your own method name 
   // and object for the method to be attached to
   
+  // Everything in docReady happens after the DOM loads. Useful if you need to check the DOM for 
   docReady(function() {
-    console.log("document loaded!");
+  
+    // Outbound click tracking
+    (function() {
+		var links       = document.querySelectorAll('a')
+		var eventMethod = document.addEventListener ? 'addEventListener' : 'attachEvent'
+
+		var visit = function(url) {
+		return function() {
+		  tracker.send('event', 'Site Exit', getElem(url).hostname, url, {'hitCallback': followLink});
+		  setTimeout(followLink, 100);
+		  function followLink() {window.location = url;}
+		}
+		}
+
+		var track = function(event) {
+			var differentHost = this.host !== window.location.host
+			var metaKey       = event.ctrlKey || event.metaKey || event.altKey
+			var rightClick    = event.which === 3
+
+			if (differentHost && !rightClick) {
+			  ga('send', 'event', 'Outbound', 'click', this.href, {'hitCallback': visit(this.href)})
+			  if (!metaKey) {
+			  (event.preventDefault) ? event.preventDefault() : event.returnValue = false
+			  }
+			}
+		}
+
+		for (var i = 0; i < links.length; i++) {
+			links[i][eventMethod]('click', track)
+		}
+    })();
+    
+    // File click tracking
+    // Takes config.
+    
   });
 
     // Sharing is caring - these functions are now public
