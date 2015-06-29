@@ -370,13 +370,20 @@ function Trackomatic(tracker, config) {
     var eventMethod = document.addEventListener ? 'addEventListener' : 'attachEvent'
 
     var track = function(event) {
-      var filematch = this.href.match(_trackomatic.config.files);
+    var filematch = this.href.match(_trackomatic.config.files);
+    var metaKey       = event.ctrlKey || event.metaKey || event.altKey
     var rightClick = event.which === 3
     if (filematch && !rightClick) {
       ga('send', 'event', 'File Clicks', this.innerHTML + " left click", this.href)
+        if (!metaKey) {
+        (event.preventDefault) ? event.preventDefault() : event.returnValue = false
+        }
     }
     if (filematch && rightClick) {
       ga('send', 'event', 'File Clicks', this.innerHTML + " right click", this.href)
+        if (!metaKey) {
+        (event.preventDefault) ? event.preventDefault() : event.returnValue = false
+        }
     }
     }
 
