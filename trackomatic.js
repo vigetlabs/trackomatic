@@ -31,7 +31,7 @@ function Trackomatic(tracker, config) {
 
   // Sanity check
   console.log("Loaded trackomatic on tracker " + tracker.get('name') + " with the config object " + JSON.stringify(config));
-  
+  _trackomatic.config=config;
   // Set defaults
   
   // Will need to define Optimizely object here one day
@@ -351,7 +351,7 @@ function Trackomatic(tracker, config) {
       var rightClick    = event.which === 3
 
       if (differentHost && !rightClick) {
-        ga('send', 'event', 'Outbound', 'click', this.href, {'hitCallback': visit(this.href)})
+        visit(this.href);
         if (!metaKey) {
         (event.preventDefault) ? event.preventDefault() : event.returnValue = false
         }
@@ -364,9 +364,30 @@ function Trackomatic(tracker, config) {
     })();
     
     // File click tracking
-    // Takes config.
+    // Takes config.files to match against 
+  (function() {
+    var links       = document.querySelectorAll('a')
+    var eventMethod = document.addEventListener ? 'addEventListener' : 'attachEvent'
+
+    var track = function(event) {
+      var filematch = this.href.match(_trackomatic.config.files);
+    var rightClick = event.which === 3
+    if (filematch && !rightClick) {
+      ga('send', 'event', 'File Clicks', this.innerHTML + " left click", this.href)
+    }
+    if (filematch && rightClick) {
+      ga('send', 'event', 'File Clicks', this.innerHTML + " right click", this.href)
+    }
+    }
+
+    for (var i = 0; i < links.length; i++) {
+    links[i][eventMethod]('click', track)
+    }
+  })();
+
     
   });
+//end of docReady()
 
     // Sharing is caring - these functions are now public
     _trackomatic.util = {
