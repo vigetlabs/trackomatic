@@ -22,47 +22,16 @@ function providePlugin(pluginName, pluginConstructor) {
   if (ga) ga('provide', pluginName, pluginConstructor);
 }
 
-  //Check for the trackomatic object globally; instantiate a local one if it's not set.
-  window._trackomatic = window._trackomatic || {};
-
 // Plugin constructor.
 //Everything takes place inside this.
 function Trackomatic(tracker, config) {
 
+  //Check for the trackomatic object globally; instantiate a local one if it's not set.
+  window._trackomatic = window._trackomatic || {};
+
   // Sanity check
+  _trackomatic.config  = typeof config !== "undefined" ? config : {};
   console.log("Loaded trackomatic on tracker " + tracker.get('name') + " with the config object " + JSON.stringify(config));
-  _trackomatic.config=config;
-  // Set defaults
-  
-  // Will need to define Optimizely object here one day
-  var optimizely = optimizely || [];
-  
-  // Add analytics object here for debugging flag and multiple calls per event
-    // Like maybe push back to dataLayer or other analytics service
-  
-  // Scroll tracking
-    //https://github.com/vigetlabs/trackomatic/issues/1
-
-  // User errors
-    // https://github.com/vigetlabs/trackomatic/issues/2
-  
-  // Optimizely experiment tracking
-    //https://github.com/vigetlabs/trackomatic/issues/3
-
-  // File click tracking
-    //Decorate .pdf links
-    //https://github.com/vigetlabs/trackomatic/issues/4
-
-  // Site exits
-    //Decorate links to different subdomains
-    //https://github.com/vigetlabs/trackomatic/issues/5
-
-  
-  // Data attribute tracking
-    //Decorate all links containing data attribute
-    //https://github.com/vigetlabs/trackomatic/issues/6
-    
-  // HTML5 Video Tracking
 
 
   // Javascript error tracking with message and line number
@@ -79,13 +48,13 @@ function Trackomatic(tracker, config) {
   // Viewport tracking
   var viewportSize = getViewportSize();
   var viewportRatio = (viewportSize.width / viewportSize.height).toPrecision(2);
-  var simpleviewportSize = viewportSize.width + "x" + viewportSize.height
+  var simpleviewportSize = roundXtoY(viewportSize.width, 100)
   dataLayer.push({
     'fed-viewportwidth'  : viewportSize.width,
     'fed-viewportheight' : viewportSize.height,
     'fed-viewportratio'  : viewportRatio
   });
-  tracker.send('event', 'FED Viewport Size', simpleviewportSize, viewportRatio, 0, { 'nonInteraction': 1 });
+  tracker.send('event', 'FED Viewport Size', String(simpleviewportSize), viewportRatio, 0, { 'nonInteraction': 1 });
   
   // Resizing tracking
   var diffDimensions = function() {
@@ -198,9 +167,9 @@ function Trackomatic(tracker, config) {
     // shortest readCookie and createCookie functions imaginable
     function readCookie(a){return(RegExp('(?:^|; )'+a+'=([^;]*)').exec(document.cookie)||[]).pop();}
     function createCookie(name,value,days) {
-      if(ga_integration_config.nocookie){return;}
+      if(_trackomatic.config.nocookie){return;}
       var expires = days ? '; expires=' + (new Date(days*864E5 + (new Date()).getTime())).toGMTString()  :'';
-      document.cookie = name+'='+value+expires+'; path=/; domain='+ga_integration_config.cookiedomain;
+      document.cookie = name+'='+value+expires+'; path=/; domain='+document.location.hostname;
     }
   
     /* get: creates a map of the query string variables, a la PHP $_GET.
@@ -249,6 +218,16 @@ function Trackomatic(tracker, config) {
       width  : document.getElementsByTagName('body')[0].clientWidth,
       height : document.getElementsByTagName('body')[0].clientHeight
     }
+    }
+  }
+  
+  function roundXtoY(x, y) {
+    var upper_bound = Math.ceil(x/y)*y
+    var lower_bound = Math.floor(x/y)*y
+    if (x - lower_bound < upper_bound - x){
+      return lower_bound
+    } else {
+      return upper_bound
     }
   }
   
@@ -329,70 +308,67 @@ function Trackomatic(tracker, config) {
   // modify this previous line to pass in your own method name 
   // and object for the method to be attached to
   
-  // Everything in docReady happens after the DOM loads. Useful if you need to check the DOM for 
+  // Everything in docReady happens after the DOM loads.
   docReady(function() {
-  
-    // Outbound click tracking
-    (function() {
-    var links       = document.querySelectorAll('a')
-    var eventMethod = document.addEventListener ? 'addEventListener' : 'attachEvent'
-
-    var visit = function(url) {
-    return function() {
-      tracker.send('event', 'Site Exit', getElem(url).hostname, url, {'hitCallback': followLink});
-      setTimeout(followLink, 100);
-      function followLink() {window.location = url;}
-    }
-    }
-
-    var track = function(event) {
-      var differentHost = this.host !== window.location.host
-      var metaKey       = event.ctrlKey || event.metaKey || event.altKey
-      var rightClick    = event.which === 3
-
-      if (differentHost && !rightClick) {
-        visit(this.href);
-        if (!metaKey) {
-        (event.preventDefault) ? event.preventDefault() : event.returnValue = false
+(function() {
+        var eventMethod     = document.addEventListener ? 'addEventListener' : 'attachEvent'
+        var eventName       = document.addEventListener ? 'click'            : 'onclick'
+        var trackedFiles    = typeof _trackomatic.config.files !== "undefined"
+              ? _trackomatic.config.files
+              : '.pdf';
+        var trackedNetworks = typeof _trackomatic.config.networks !== "undefined"
+              ? _trackomatic.config.networks
+              : 'facebook\.com|twitter\.com|instagram\.com|linkedin\.com|pinterest\.com|tumblr\.com|plus\.google\.com';
+        var followLink = function(href) {
+          return function() {
+            window.location = href;
+          }
         }
-      }
-    }
-
-    for (var i = 0; i < links.length; i++) {
-      links[i][eventMethod]('click', track)
-    }
-    })();
-    
-    // File click tracking
-    // Takes config.files to match against 
-  (function() {
-    var links       = document.querySelectorAll('a')
-    var eventMethod = document.addEventListener ? 'addEventListener' : 'attachEvent'
-
-    var track = function(event) {
-    var filematch = this.href.match(_trackomatic.config.files);
-    var metaKey       = event.ctrlKey || event.metaKey || event.altKey
-    var rightClick = event.which === 3
-    if (filematch && !rightClick) {
-      ga('send', 'event', 'File Clicks', this.innerHTML + " left click", this.href)
-        if (!metaKey) {
-        (event.preventDefault) ? event.preventDefault() : event.returnValue = false
+        var visit = function(clickType, keyCode, event, link) {
+          var url = link.href;
+          ga('send', 'event', clickType, link.hostname, url, {'hitCallback': followLink(url)});
+          setTimeout(followLink(url), _trackomatic.config.redirectDelay);
+          (event.preventDefault) ? event.preventDefault() : event.returnValue = false
         }
-    }
-    if (filematch && rightClick) {
-      ga('send', 'event', 'File Clicks', this.innerHTML + " right click", this.href)
-        if (!metaKey) {
-        (event.preventDefault) ? event.preventDefault() : event.returnValue = false
+        getHost = function(url) {
+          // necessary because you can't use the a.host trick to get host in IE8, apparently
+          return url.replace(/^https?:\/\//, '').split('/')[0]
         }
-    }
-    }
-
-    for (var i = 0; i < links.length; i++) {
-    links[i][eventMethod]('click', track)
-    }
-  })();
-
-    
+        var getVisitData = function(event, link) {
+          var url           = link.href
+          var differentHost = getHost(url) !== getHost(window.location.href)
+          var rightClick    = event.which === 3
+          var metaKey       = event.ctrlKey || event.metaKey || event.altKey
+          if (!rightClick && !metaKey) {
+            if (url.match(trackedFiles)) {
+              return ["File Click", "click"]
+            } else if (url.match(/^mailto:/)) {
+              return ["Mailto Click", "click"]
+            } else if (url.match(/^tel:/)) {
+              return ["Telephone Click", "click"]
+            } else if (differentHost) {
+              return (url.match(trackedNetworks)) ? ["Social Media Click", "click"] : ["Site Exit", event.which]
+            }
+          }
+        }
+        var getLink = function(node) {
+          if (node === document.documentElement) {
+            return false
+          } else if (node.tagName.toLowerCase() === 'a') {
+            return node
+          } else {
+            return getLink(node.parentNode)
+          }
+        }
+        var track = function(event) {
+          var link = getLink(event.target || event.srcElement)
+          if (link) {
+            var data = getVisitData(event, link)
+            if (data) visit(data[0], data[1], event, link)
+          }
+        }
+        document.documentElement[eventMethod](eventName, track)
+      })()
   });
 //end of docReady()
 
