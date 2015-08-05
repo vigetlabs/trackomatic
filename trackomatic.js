@@ -78,10 +78,10 @@ function Trackomatic(tracker, config) {
     dataLayer.push(event);
   }
 
-  if (window.addEventListener
-      && !/iPad|iPhone|iPod/.test(navigator.platform)
-      && !/android/i.test(navigator.userAgent)) {
-    window.addEventListener('resize', debounce(diffDimensions, 1000));
+  if (window.addEventListener) {
+    if (!/iPad|iPhone|iPod/.test(navigator.platform) && !/android/i.test(navigator.userAgent)) {
+      window.addEventListener('resize', debounce(diffDimensions, 1000));
+    }
     window.addEventListener('orientationchange', debounce(diffDimensions, 1000));
   }
 
