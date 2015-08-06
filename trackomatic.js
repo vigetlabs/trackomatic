@@ -1,13 +1,13 @@
 /**
  * @license Copyright 2015 Viget Labs
  * Trackomatic.js Automatic Google Analytics Tracking Version 0.1
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,7 +55,7 @@ function Trackomatic(tracker, config) {
     'fed-viewportratio'  : viewportRatio
   });
   tracker.send('event', 'FED Viewport Size', String(simpleviewportSize), viewportRatio, 0, { 'nonInteraction': 1 });
-  
+
   // Resizing tracking
   var diffDimensions = function() {
     var newSize = getViewportSize();
@@ -79,11 +79,13 @@ function Trackomatic(tracker, config) {
   }
 
   if (window.addEventListener) {
-    window.addEventListener('resize', debounce(diffDimensions, 1000));
+    if (!/iPad|iPhone|iPod/.test(navigator.platform) && !/android/i.test(navigator.userAgent)) {
+      window.addEventListener('resize', debounce(diffDimensions, 1000));
+    }
     window.addEventListener('orientationchange', debounce(diffDimensions, 1000));
-  }  
-  
-  
+  }
+
+
   // Input method tracking
 
   var firstInputRecorded = false;
@@ -133,7 +135,7 @@ function Trackomatic(tracker, config) {
   window.addEventListener(mouseEvent, function() {
     recordInput('mouse');
   });
-  
+
   // Utility functions
 
     //getElem: allows you to quickly get the domain, pathname, etc off of a full URL.
@@ -142,18 +144,18 @@ function Trackomatic(tracker, config) {
       target.href = href;
       return target;
     }
-  
+
     // getPathname: A light wrapper for getElem (above) for directly getting the pathname
     function getPathname(href) {
       //normalize the pathname, since IE omits the leading slash.
-      return href && getElem(href).pathname.replace(/(^\/?)/,'/'); 
+      return href && getElem(href).pathname.replace(/(^\/?)/,'/');
     }
 
     // proper: Simply capitalizes the first letter of a string. Useful for combining inconsistent data sources.
     function proper(string) {
       return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     }
-    
+
     // slugify: Turns strings into slugs. Useful for combining inconsistent data sources.
     function slugify(text) {
       return text.toString().toLowerCase()
@@ -171,7 +173,7 @@ function Trackomatic(tracker, config) {
       var expires = days ? '; expires=' + (new Date(days*864E5 + (new Date()).getTime())).toGMTString()  :'';
       document.cookie = name+'='+value+expires+'; path=/; domain='+document.location.hostname;
     }
-  
+
     /* get: creates a map of the query string variables, a la PHP $_GET.
     So, ?foo=bar -> {'foo' : 'bar'};, accessible as get.foo.
     */
@@ -182,7 +184,7 @@ function Trackomatic(tracker, config) {
       });
       return map;
     } ());
-    
+
     // debounce: practice safe javascript
   function debounce(func, wait, immediate) {
     var timeout
@@ -198,7 +200,7 @@ function Trackomatic(tracker, config) {
       if (callNow) func.apply(context, args)
     }
   }
-  
+
   // getViewportSize: does exactly what it says on the tin
   function getViewportSize() {
     if (typeof window.innerWidth !== 'undefined') {
@@ -220,7 +222,7 @@ function Trackomatic(tracker, config) {
     }
     }
   }
-  
+
   function roundXtoY(x, y) {
     var upper_bound = Math.ceil(x/y)*y
     var lower_bound = Math.floor(x/y)*y
@@ -230,21 +232,21 @@ function Trackomatic(tracker, config) {
       return upper_bound
     }
   }
-  
+
   // DOM ready check in plain js taken from https://github.com/jfriend00/docReady
   // call with docReady(fn);
   (function(funcName, baseObj) {
     "use strict";
     // The public function name defaults to window.docReady
     // but you can modify the last line of this function to pass in a different object or method name
-    // if you want to put them in a different namespace and those will be used instead of 
+    // if you want to put them in a different namespace and those will be used instead of
     // window.docReady(...)
     funcName = funcName || "docReady";
     baseObj = baseObj || window;
     var readyList = [];
     var readyFired = false;
     var readyEventHandlersInstalled = false;
-  
+
     // call this when the document is ready
     // this function protects itself against being called more than once
     function ready() {
@@ -264,13 +266,13 @@ function Trackomatic(tracker, config) {
         readyList = [];
       }
     }
-  
+
     function readyStateChange() {
       if ( document.readyState === "complete" ) {
         ready();
       }
     }
-  
+
     // This is the one public interface
     // docReady(fn, context);
     // the context argument is optional - if present, it will be passed
@@ -305,9 +307,9 @@ function Trackomatic(tracker, config) {
       }
     }
   })("docReady", window);
-  // modify this previous line to pass in your own method name 
+  // modify this previous line to pass in your own method name
   // and object for the method to be attached to
-  
+
   // Everything in docReady happens after the DOM loads.
   docReady(function() {
 (function() {
@@ -374,7 +376,7 @@ function Trackomatic(tracker, config) {
 
     // Sharing is caring - these functions are now public
     _trackomatic.util = {
-      createCookie: createCookie, 
+      createCookie: createCookie,
       readCookie: readCookie,
       getURLParam: get,
       getPathname: getPathname,
