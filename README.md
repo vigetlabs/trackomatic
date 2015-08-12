@@ -29,7 +29,7 @@ Trackomatic accepts parameters to customize its tracking. Configuration paramete
 
 ```javascript
 ga('create', 'UA-XXXXX-Y', 'auto');
-ga('require', 'trackomatic', {files: '/log', debug: true});
+ga('require', 'trackomatic', {files: '\.pdf|\.docx|\.pptx', networks: 'reddit\.com', redirectDelay: 100});
 ga('send', 'pageview');
 ````
 
@@ -37,7 +37,7 @@ There are currently three configuration options:
 
 **files**: takes a regex of file extensions to check against, and will fire an event on click. If no files are specified, Trackomatic will check for .pdf files only.
 
-**networks**: takes a regex of social media networks, and will fire an event on click. If no networks are specified, Trackomatic will track the following networks:
+**networks**: takes a regex of social media network URLs, and fires an event on click. If no networks are specified, Trackomatic will track the following networks:
 
 - Facebook
 - Twitter
