@@ -62,17 +62,17 @@ function Trackomatic(tracker, config) {
     var event   = {};
     if (newSize.height > viewportSize.height) {
     event['fed-resize-height'] = 'taller';
-    tracker.send('event', 'FED Viewport Resize', 'fed-resize-height', 'taller', 0, { 'nonInteraction': 1 });
+    tracker.send('event', 'FED Viewport Resize', 'FED Resize Height', 'taller', 0, { 'nonInteraction': 1 });
     } else if (newSize.height < viewportSize.height) {
     event['fed-resize-height'] = 'shorter';
-    tracker.send('event', 'FED Viewport Resize', 'fed-resize-height', 'shorter', 0, { 'nonInteraction': 1 });
+    tracker.send('event', 'FED Viewport Resize', 'FED Resize Height', 'shorter', 0, { 'nonInteraction': 1 });
     }
     if (newSize.width > viewportSize.width) {
     event['fed-resize-width'] = 'wider';
-    tracker.send('event', 'FED Viewport Resize', 'fed-resize-width', 'wider', 0, { 'nonInteraction': 1 });
+    tracker.send('event', 'FED Viewport Resize', 'FED Resize Width', 'wider', 0, { 'nonInteraction': 1 });
     } else if (newSize.width < viewportSize.width) {
     event['fed-resize-width'] = 'narrower';
-    tracker.send('event', 'FED Viewport Resize', 'fed-resize-width', 'narrower', 0, { 'nonInteraction': 1 });
+    tracker.send('event', 'FED Viewport Resize', 'FED Resize Width', 'narrower', 0, { 'nonInteraction': 1 });
     }
     viewportSize = newSize;
     dataLayer.push(event);
