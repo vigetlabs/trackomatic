@@ -328,8 +328,9 @@ function Trackomatic(tracker, config) {
         }
         var visit = function(clickType, keyCode, event, link) {
           var url = link.href;
+          var delay = typeof _trackomatic.config.redirectDelay !== "undefined" ? _trackomatic.config.redirectDelay : 100
           ga('send', 'event', clickType, link.hostname, url, {'hitCallback': followLink(url)});
-          setTimeout(followLink(url), _trackomatic.config.redirectDelay);
+          setTimeout(followLink(url), delay);
           (event.preventDefault) ? event.preventDefault() : event.returnValue = false
         }
         getHost = function(url) {
