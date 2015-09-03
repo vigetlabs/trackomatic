@@ -374,7 +374,7 @@ function Trackomatic(tracker, config) {
       var visit = function(clickType, keyCode, event, link) {
         var url = link.href;
         var delay = typeof _trackomatic.config.redirectDelay !== 'undefined'
-          ? _trackomatic.config.redirectDelay
+          ? Math.min(_trackomatic.config.redirectDelay, 1000) // limit redirectDelay to 1 second maximum
           : 100
         ga('send', 'event', clickType, link.hostname, url, { 'hitCallback': followLink(url) });
         setTimeout(followLink(url), delay);
