@@ -15,6 +15,8 @@
  * limitations under the License.
 */
 
+var BODY = document.getElementsByTagName('body')[0];
+
 var CONSTANTS = {
   REGEX: {
     IDEVICE          : /iPad|iPhone|iPod/,
@@ -256,20 +258,20 @@ function Trackomatic(tracker, config) {
       }
     } else {
       return {
-        width  : document.getElementsByTagName('body')[0].clientWidth,
-        height : document.getElementsByTagName('body')[0].clientHeight
+        width  : BODY.clientWidth,
+        height : BODY.clientHeight
       }
     }
   }
 
   function roundXtoY(x, y) {
-    var upper_bound = Math.ceil(x/y) * y;
-    var lower_bound = Math.floor(x/y) * y;
+    var upper = Math.ceil(x/y) * y;
+    var lower = Math.floor(x/y) * y;
 
-    if (x - lower_bound < upper_bound - x) {
-      return lower_bound;
+    if (x - lower < upper - x) {
+      return lower;
     } else {
-      return upper_bound;
+      return upper;
     }
   }
 
@@ -354,14 +356,14 @@ function Trackomatic(tracker, config) {
   // Everything in docReady happens after the DOM loads.
   docReady(function() {
     (function() {
-      var eventMethod     = document.addEventListener ? 'addEventListener' : 'attachEvent'
-      var eventName       = document.addEventListener ? 'click'            : 'onclick'
-      var trackedFiles    = typeof _trackomatic.config.files !== 'undefined'
-            ? _trackomatic.config.files
-            : '.pdf';
+      var eventMethod  = document.addEventListener ? 'addEventListener' : 'attachEvent'
+      var eventName    = document.addEventListener ? 'click'            : 'onclick'
+      var trackedFiles = typeof _trackomatic.config.files !== 'undefined'
+        ? _trackomatic.config.files
+        : '.pdf';
       var trackedNetworks = typeof _trackomatic.config.networks !== 'undefined'
-            ? _trackomatic.config.networks
-            : 'facebook\.com|twitter\.com|instagram\.com|linkedin\.com|pinterest\.com|tumblr\.com|plus\.google\.com';
+        ? _trackomatic.config.networks
+        : 'facebook\.com|twitter\.com|instagram\.com|linkedin\.com|pinterest\.com|tumblr\.com|plus\.google\.com';
 
       var followLink = function(href) {
         return function() {
@@ -371,10 +373,12 @@ function Trackomatic(tracker, config) {
 
       var visit = function(clickType, keyCode, event, link) {
         var url = link.href;
-        var delay = typeof _trackomatic.config.redirectDelay !== 'undefined' ? _trackomatic.config.redirectDelay : 100
+        var delay = typeof _trackomatic.config.redirectDelay !== 'undefined'
+          ? _trackomatic.config.redirectDelay
+          : 100
         ga('send', 'event', clickType, link.hostname, url, { 'hitCallback': followLink(url) });
         setTimeout(followLink(url), delay);
-        (event.preventDefault) ? event.preventDefault() : event.returnValue = false;
+        event.preventDefault ? event.preventDefault() : event.returnValue = false;
       }
 
       var getHost = function(url) {
@@ -413,6 +417,7 @@ function Trackomatic(tracker, config) {
 
       var track = function(event) {
         var link = getLink(event.target || event.srcElement);
+
         if (link) {
           var data = getVisitData(event, link);
           if (data) visit(data[0], data[1], event, link);
