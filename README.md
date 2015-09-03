@@ -56,6 +56,6 @@ Trackomatic.js makes certain internal utility functions public by way of the glo
 - readCookie
 - getURLParam
 - getPathname
-- proper
+- capitalize
 - slugify
 - debounce
