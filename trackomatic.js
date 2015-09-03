@@ -32,6 +32,11 @@ var CONSTANTS = {
     MULTIPLE_HYPHENS : /\-\-+/g,
     LEADING_HYPHENS  : /^-+/,
     TRAILING_HYPHENS : /-+$/
+  },
+
+  CONFIG: {
+    MAX_REDIRECT_DELAY     : 1000,
+    DEFAULT_REDIRECT_DELAY : 100
   }
 }
 
@@ -43,9 +48,8 @@ function providePlugin(pluginName, pluginConstructor) {
 }
 
 // Plugin constructor.
-//Everything takes place inside this.
+// Everything takes place inside this.
 function Trackomatic(tracker, config) {
-
   //Check for the trackomatic object globally; instantiate a local one if it's not set.
   window._trackomatic = window._trackomatic || {};
 
@@ -374,8 +378,8 @@ function Trackomatic(tracker, config) {
       var visit = function(clickType, keyCode, event, link) {
         var url = link.href;
         var delay = typeof _trackomatic.config.redirectDelay !== 'undefined'
-          ? Math.min(_trackomatic.config.redirectDelay, 1000) // limit redirectDelay to 1 second maximum
-          : 100
+          ? Math.min(_trackomatic.config.redirectDelay, CONSTANTS.CONFIG.MAX_REDIRECT_DELAY) // limit redirectDelay to 1 second maximum
+          : CONSTANTS.CONFIG.DEFAULT_REDIRECT_DELAY
         ga('send', 'event', clickType, link.hostname, url, { 'hitCallback': followLink(url) });
         setTimeout(followLink(url), delay);
         event.preventDefault ? event.preventDefault() : event.returnValue = false;
