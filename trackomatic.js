@@ -52,7 +52,7 @@ function Trackomatic(tracker, config) {
   // Viewport tracking
   var viewportSize = getViewportSize();
   var viewportRatio = (viewportSize.width / viewportSize.height).toPrecision(2);
-  var simpleviewportSize = roundXtoY(viewportSize.width, 100)
+  var simpleviewportSize = roundXtoY(viewportSize.width, 100);
   dataLayer.push({
     'fed-viewportwidth'  : viewportSize.width,
     'fed-viewportheight' : viewportSize.height,
