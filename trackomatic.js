@@ -33,6 +33,10 @@ function Trackomatic(tracker, config) {
   _trackomatic.config  = typeof config !== "undefined" ? config : {};
   console.log("Loaded trackomatic on tracker " + tracker.get('name') + " with the config object " + JSON.stringify(config));
 
+  // Check for dataLayer variable (from Google Tag Manager) and define if doesn't exist (not using GTM).
+  if (typeof dataLayer === "undefined") {
+    dataLayer = [];
+  }
 
   // Javascript error tracking with message and line number
   // Should use exception tracking in next version: https://developers.google.com/analytics/devguides/collection/analyticsjs/exceptions
@@ -48,7 +52,7 @@ function Trackomatic(tracker, config) {
   // Viewport tracking
   var viewportSize = getViewportSize();
   var viewportRatio = (viewportSize.width / viewportSize.height).toPrecision(2);
-  var simpleviewportSize = roundXtoY(viewportSize.width, 100)
+  var simpleviewportSize = roundXtoY(viewportSize.width, 100);
   dataLayer.push({
     'fed-viewportwidth'  : viewportSize.width,
     'fed-viewportheight' : viewportSize.height,
