@@ -4,3 +4,4 @@ compiler.jar
 tmp
 node_modules
 *.map
+.env
