@@ -2,3 +2,4 @@ trackomatic_min.js
 .DS_Store
 compiler.jar
 tmp
+node_modules
