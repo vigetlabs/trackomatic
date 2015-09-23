@@ -43,10 +43,8 @@ class Trackomatic {
       ' with the config object ' + JSON.stringify(this.options)
     )
 
-    this.plugins = []
-
     for (let key in plugins) {
-      this.plugins.push(new plugins[key](this))
+      new plugins[key](this)
     }
   }
 

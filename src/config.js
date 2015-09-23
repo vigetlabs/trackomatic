@@ -1,4 +1,4 @@
-let CONFIG = {
+const config = {
   BODY: document.getElementsByTagName('body')[0],
 
   REGEX: {
@@ -35,7 +35,7 @@ let CONFIG = {
   }
 }
 
-CONFIG.NON_MOBILE_PLATFORM = !CONFIG.REGEX.IDEVICE.test(navigator.platform) &&
-                             !CONFIG.REGEX.ANDROID.test(navigator.userAgent)
+config.NON_MOBILE_PLATFORM = !config.REGEX.IDEVICE.test(navigator.platform) &&
+                             !config.REGEX.ANDROID.test(navigator.userAgent)
 
-module.exports = CONFIG
+module.exports = config
