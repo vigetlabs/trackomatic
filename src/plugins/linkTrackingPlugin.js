@@ -47,7 +47,7 @@ class LinkTrackingPlugin extends BasePlugin {
   }
 
   interceptVisit(clickType, keyCode, e, link) {
-    let { util, config, options } = this.__trackomatic__
+    let { config, options } = this.__trackomatic__
     let url      = link.href
     let delay    = Math.min(options.redirectDelay, config.MAX_REDIRECT_DELAY)
     let redirect = this.createRedirect(url)
