@@ -29,11 +29,17 @@ Trackomatic accepts parameters to customize its tracking. Configuration paramete
 
 ```javascript
 ga('create', 'UA-XXXXX-Y', 'auto');
-ga('require', 'trackomatic', {files: '\.pdf|\.docx|\.pptx', networks: 'reddit\.com', redirectDelay: 100});
+ga('require', 'trackomatic', {
+    files: '\.pdf|\.docx|\.pptx', 
+    networks: 'reddit\.com', 
+    redirectDelay: 100
+});
 ga('send', 'pageview');
 ````
 
-There are currently three configuration options:
+There are currently a couple configuration options:
+
+**debug**: `true || false`, if `true` then replaces calls to `tracker.send`(GA) and `dataLayer.push`(GTM) with `console.log` statements.
 
 **files**: takes a regex of file extensions to check against, and will fire an event on click. If no files are specified, Trackomatic will check for .pdf files only.
 
@@ -52,10 +58,17 @@ There are currently three configuration options:
 ## Public Functions
 Trackomatic.js makes certain internal utility functions public by way of the global trackomatic object. The following functions are available under trackomatic.util:
 
-- createCookie
-- readCookie
-- getURLParam
-- getPathname
 - capitalize
-- slugify
+- createAnchor
+- createCookie
+- createNavigationHandler
 - debounce
+- getHost
+- getLink
+- getPathname
+- getViewportSize
+- keyCode
+- readCookie
+- getURLParams
+- roundXtoY
+- slugify
