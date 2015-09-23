@@ -3,3 +3,4 @@ trackomatic_min.js
 compiler.jar
 tmp
 node_modules
+*.map
