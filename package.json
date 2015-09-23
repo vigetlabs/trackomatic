@@ -1,0 +1,28 @@
+{
+  "name": "trackomatic",
+  "version": "0.0.1",
+  "description": "Viget Labs' GA Tracking Extensions",
+  "main": "dist/trackomatic.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --watch",
+    "build": "NODE_ENV=production webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vigetlabs/trackomatic.git"
+  },
+  "author": "Solomon Hawk <solomon.hawk@viget.com> (http://viget.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vigetlabs/trackomatic/issues"
+  },
+  "homepage": "https://github.com/vigetlabs/trackomatic",
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-core": "^5.8.24",
+    "babel-loader": "^5.3.2",
+    "json-loader": "^0.5.2",
+    "webpack": "^1.12.1"
+  }
+}
