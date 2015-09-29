@@ -2,7 +2,15 @@
 
 Do not forget to tag each release!
 
-## 1.0.0 (current)
+## 1.1.0 (current)
+- Large refactor of codebase modularity, testability focus
+- Bugfix: Respect anchor's "target" attribute when creating redirects
+- Bugfix: Do not redirect twice (redirect as hitCallback and in setTimeout)
+- Better test coverage
+- Added auto-documentation using [esdoc](https://esdoc.org)
+- Added deployment to S3
+
+## 1.0.0
 - Fix for click tracking with meta keys
 - Removed feature ideas, which all live in github issues now
 

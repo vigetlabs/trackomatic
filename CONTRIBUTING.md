@@ -2,7 +2,7 @@
 
 Thank you for considering a contribution to this project!
 
-Trackomatic is currently under heavy development by @awavering and @averyvery
+Trackomatic is currently under heavy development by @viget
 
 If you have a feature you would like to add to Trackomatic, please add a 
 
