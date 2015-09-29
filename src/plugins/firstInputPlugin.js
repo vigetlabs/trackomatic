@@ -3,18 +3,31 @@ const once       = require('../once')
 
 /**
  * Tracks what the first interaction mode is (mouse, touch, keyboard)
+ *
+ * @class FirstInputPlugin
+ * @extends plugin as BasePlugin
  */
 class FirstInputPlugin extends BasePlugin {
+
+  /**
+   * The setup function for this plugin
+   *
+   * @function install
+   * @returns { Void }
+   */
   install() {
     this.firstInputRecorded = false
 
     once(window, this.getMouseEvent(), this.onMouseInput.bind(this))
-    once(window, 'touchstart', this.onTouchInput.bind(this))
-    once(window, 'keydown', this.onKeyboardInput.bind(this))
+    once(window, 'touchstart',         this.onTouchInput.bind(this))
+    once(window, 'keydown',            this.onKeyboardInput.bind(this))
   }
 
   /**
    * Returns the proper name of the mouse event for this environment
+   *
+   * @function getMouseEvent
+   * @returns { String } - the name of the mouse event for this browser
    **/
   getMouseEvent() {
     let event = 'mousedown'
@@ -28,17 +41,38 @@ class FirstInputPlugin extends BasePlugin {
     return event
   }
 
+  /**
+   * Callback for mouse input events
+   *
+   * @function onMouseInput
+   * @param { Object } e - the event object
+   * @returns { Void }
+   **/
   onMouseInput(e) {
     this.recordFirstInput('mouse', this.__trackomatic__.util.keyCode(e))
   }
 
+  /**
+   * Callback for touch input events
+   *
+   * @function onTouchInput
+   * @param { Object } e - the event object
+   * @returns { Void }
+   **/
   onTouchInput(e) {
     this.recordFirstInput('touch', this.__trackomatic__.util.keyCode(e))
   }
 
+  /**
+   * Callback for keyboard input events
+   *
+   * @function onKeyboardInput
+   * @param { Object } e - the event object
+   * @returns { Void }
+   **/
   onKeyboardInput(e) {
     e = e || window.event
-    let code = this.__trackomatic__.util.keyCode(e)
+    let code      = this.__trackomatic__.util.keyCode(e)
     let blacklist = this.__trackomatic__.config.EXCLUDED_KEYS
 
     /**
@@ -58,37 +92,35 @@ class FirstInputPlugin extends BasePlugin {
     }
 
     if (shouldRecordKey) {
-      this.__trackomatic__.notifyGTM({ 'fed-firstkeycode': code })
+      // track the first keycode
+      this.track({
+        category : 'First Input',
+        action   : 'First Keycode',
+        label    : code
+      })
+
+      // also attempt to track this as the first input
       this.recordFirstInput('keyboard', code)
     }
   }
 
   /**
-   * Records the first input used. Does nothing after the first call.
+   * Tracks the first input used. Does nothing after the first call.
    *
-   * @param {string} type - the type of interaction ('click', 'touchstart', etc.)
-   * @param {string} keyCode - the code describing which key was pressed
+   * @param { String } inputType - The type of interaction ('click', 'touchstart', etc.)
+   * @param { String } keyCode   - The code describing which key was pressed
    */
-  recordFirstInput(type, keyCode) {
+  recordFirstInput(inputType, keyCode) {
     if (!this.firstInputRecorded) {
-      this.recordInput(type, keyCode, 'fed-firstinput', 'FED First Input')
+      this.track({
+        category : 'First Input',
+        action   : inputType,
+        label    : keyCode
+      })
+
       this.firstInputRecorded = true
     }
   }
-
-  /**
-   * Records a user interaction, pushing it to dataLayer with the specified
-   * dataLayerEvent name and to the tracker with the specified interactionLabel.
-   *
-   * @param {string} type - the type of interaction ('click', 'touchstart', etc.)
-   * @param {string} keyCode - the code describing which key was pressed
-   * @param {string} dataLayerEvent - an event label for dataLayer
-   * @param {string} interactionLabel - a human-friendly title to label the interaction
-   */
-  recordInput(type, keyCode, dataLayerEvent, interactionLabel) {
-    this.__trackomatic__.notifyGA('event', interactionLabel, type, keyCode || 'none', 0, { 'nonInteraction': 1 })
-    this.__trackomatic__.notifyGTM({ [dataLayerEvent]: type })
-  }
 }
 
-module.exports = FirstInputPlugin
+export default FirstInputPlugin

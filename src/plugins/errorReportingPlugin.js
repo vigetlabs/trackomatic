@@ -1,25 +1,38 @@
 const BasePlugin = require('../plugin')
 
 /**
- * Javascript error tracking with message and line number
+ * Tracks JavasSript errors with message and line number
  *
  * Should use exception tracking in next version:
  * https://developers.google.com/analytics/devguides/collection/analyticsjs/exceptions
+ *
+ * @extends {Plugin}
  */
 class ErrorReportingPlugin extends BasePlugin {
+
+  /**
+   * The setup function for this plugin
+   *
+   * @returns { Void }
+   */
   install() {
     this.oldonerror = window.onerror
 
     // this is prone to being replaced or overwritten
-    //  by other libraries present in the page
-    window.onerror = function(msg, url, line) {
+    // by other libraries present in the page
+    // TODO: better error tracking
+    window.onerror = (msg, url, line) => {
       if (this.oldonerror) {
         this.oldonerror.apply(this, arguments)
       }
 
-      this.__trackomatic__.notifyGA('event', 'FED JavaScript Error', msg, url + '_' + line, 0, { 'nonInteraction': 1 })
+      this.track({
+        category : 'JavaScript Error',
+        action   : msg,
+        label    : `${ url } @ Line ${ line }`
+      })
     }
   }
 }
 
-module.exports = ErrorReportingPlugin
+export default ErrorReportingPlugin

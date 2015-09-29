@@ -14,7 +14,7 @@ To use Trackomatic, simply load trackomatic.js on your site and configure it as 
 ga('create', 'UA-XXXXX-Y', 'auto');
 ga('require', 'trackomatic');
 ga('send', 'pageview');
-````
+```
 
 ## Custom Events
 - JS errors: when an on-page script throws an error, we send some basic diagnostic information back to GA.
@@ -35,15 +35,15 @@ ga('require', 'trackomatic', {
     redirectDelay: 100
 });
 ga('send', 'pageview');
-````
+```
 
-There are currently a couple configuration options:
+### Configuration Options:
 
 **debug**: `true || false`, if `true` then replaces calls to `tracker.send`(GA) and `dataLayer.push`(GTM) with `console.log` statements.
 
 **files**: takes a regex of file extensions to check against, and will fire an event on click. If no files are specified, Trackomatic will check for .pdf files only.
 
-**networks**: takes a regex of social media network URLs, and fires an event on click. If no networks are specified, Trackomatic will track the following networks:
+**networks**: takes an array of string social media network URLs, and fires an event on click. If no networks are specified, Trackomatic will track the following networks:
 
 - Facebook
 - Twitter
@@ -52,6 +52,8 @@ There are currently a couple configuration options:
 - Pinterest
 - Tumblr
 - Google Plus
+
+**prefix**: default: "trackomatic". All events reported to GA / GTM will be prefixed with this string followed by a hyphen. (e.g. `trackomatic-first-input`)
 
 **redirectDelay**: to make sure our tracking data reaches Google’s servers before a page reloads, Trackomatic adds in a small delay before loading the new page. By default, this delay is 100 milliseconds. You can make it longer or shorter if you prefer.
 
@@ -72,3 +74,7 @@ Trackomatic.js makes certain internal utility functions public by way of the glo
 - getURLParams
 - roundXtoY
 - slugify
+
+## Error Reporting
+
+Use AirBrake if you can

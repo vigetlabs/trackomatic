@@ -4,6 +4,7 @@ var config = require('./config')
  * Utility functions
  **/
 const util = {
+  noop() {},
 
   keyCode(e) {
     e = e || window.event
@@ -26,7 +27,7 @@ const util = {
    */
   getPathname(href) {
     // normalize the pathname, since IE omits the leading slash.
-    return href && util.createAnchor(href).pathname.replace(config.REGEX.LEADING_SLASH, '/')
+    return href && this.createAnchor(href).pathname.replace(config.REGEX.LEADING_SLASH, '/')
   },
 
   /**
@@ -38,8 +39,11 @@ const util = {
   },
 
   /**
-   * Turns strings into slugs. Useful for combining inconsistent data sources.
-   * @param {string} text - the string to slugify
+   * Turns strings into slugs - useful for combining inconsistent data sources
+   *
+   * @function slugify
+   * @param   { String } text - the string to slugify
+   * @returns { String }      - the slugified string
    */
   slugify(text) {
     return text.toString()
@@ -113,10 +117,14 @@ const util = {
       }
     } else {
       return {
-        width  : config.BODY.clientWidth,
-        height : config.BODY.clientHeight
+        width  : document.body.clientWidth,
+        height : document.body.clientHeight
       }
     }
+  },
+
+  getViewportRatio(size) {
+    return (size.width / size.height).toPrecision(2)
   },
 
   /**
@@ -129,9 +137,13 @@ const util = {
     return (x - lower < upper - x) ? lower : upper
   },
 
-  createNavigationHandler(url) {
+  createNavigationHandler(link) {
     return function() {
-      window.location = url
+      if (link.target) {
+        window.open(link.href, link.target)
+      } else {
+        window.location = link.href
+      }
     }
   },
 
@@ -145,7 +157,7 @@ const util = {
     } else if (node.tagName.toLowerCase() === 'a') {
       return node
     } else {
-      return util.getLink(node.parentNode)
+      return this.getLink(node.parentNode)
     }
   },
 
@@ -153,7 +165,33 @@ const util = {
     let map = {}
     location.href.replace(config.REGEX.QUERY_PARAMS, (m, k, v) => map[k] = v)
     return map
+  },
+
+  isArray(item) {
+    return Object.prototype.toString.call(item) === '[object Array]'
+  },
+
+  regexify(input) {
+    input = this.isArray(input) ? input : [input]
+    return new RegExp(input.map(s => s.replace(/\./g, '\\.')).join('|'), 'i')
+  },
+
+  /**
+   * Wraps a function and guards it from being invoked more than once
+   *
+   * @function callOnce
+   * @param   { Function } fn - the function to guard
+   * @returns { Function }    - the wrapped function
+   */
+  callOnce(fn) {
+    let called = false
+
+    return function callOnceWrappedFunction() {
+      if (called) return
+      fn()
+      called = true
+    }
   }
 }
 
-module.exports = util
+export default util

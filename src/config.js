@@ -1,8 +1,6 @@
 const config = {
-  BODY: document.getElementsByTagName('body')[0],
-
   REGEX: {
-    IDEVICE          : /iPad|iPhone|iPod/,
+    IDEVICE          : /iPad', 'iPhone', 'iPod/,
     ANDROID          : /android/i,
     LEADING_SLASH    : /(^\/?)/,
     COOKIE           : /(?:^|; )'+a+'=([^;]*)/,
@@ -19,9 +17,11 @@ const config = {
 
   DEFAULTS: {
     debug: false,
+    delimiter: '|',
     redirectDelay : 100,
-    files: '.pdf',
-    networks: 'facebook\.com|twitter\.com|instagram\.com|linkedin\.com|pinterest\.com|tumblr\.com|plus\.google\.com'
+    prefix: 'Trackomatic',
+    files: ['.pdf'],
+    networks: ['facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com', 'pinterest.com', 'tumblr.com', 'plus.google.com']
   },
 
   MAX_REDIRECT_DELAY: 1000,
@@ -32,10 +32,14 @@ const config = {
     down     : 40,
     pageup   : 33,
     pagedown : 34
+  },
+
+  KEYS: {
+    RIGHT_CLICK: 3
   }
 }
 
-config.NON_MOBILE_PLATFORM = !config.REGEX.IDEVICE.test(navigator.platform) &&
-                             !config.REGEX.ANDROID.test(navigator.userAgent)
+config.MOBILE_PLATFORM = config.REGEX.IDEVICE.test(navigator.platform) ||
+                         config.REGEX.ANDROID.test(navigator.userAgent)
 
-module.exports = config
+export default config

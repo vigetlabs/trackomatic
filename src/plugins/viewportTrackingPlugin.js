@@ -1,32 +1,49 @@
 const BasePlugin = require('../plugin')
 
 /**
- * Viewport tracking
+ * Viewport tracking and peporting plugin
+ *
+ * @class ViewportTrackingPlugin
+ * @extends plugin as BasePlugin
  */
 class ViewportTrackingPlugin extends BasePlugin {
 
+  /**
+   * The setup function for this plugin
+   *
+   * @function install
+   * @returns { Void }
+   */
   install() {
-    this.viewportSize       = this.__trackomatic__.util.getViewportSize()
-    this.viewportRatio      = (this.viewportSize.width / this.viewportSize.height).toPrecision(2)
-    this.simpleViewportSize = this.__trackomatic__.util.roundXtoY(this.viewportSize.width, 100)
+    let { util } = this.__trackomatic__
 
-    /**
-     * Notify GTM of the initial viewport related metrics
-     **/
-    this.__trackomatic__.notifyGTM({
-      'fed-viewportwidth'  : this.viewportSize.width,
-      'fed-viewportheight' : this.viewportSize.height,
-      'fed-viewportratio'  : this.viewportRatio
+    this.viewportSize  = util.getViewportSize()
+    this.viewportRatio = util.getViewportRatio(this.viewportSize)
+    this.simpleWidth   = util.roundXtoY(this.viewportSize.width, 100)
+    this.simpleHeight  = util.roundXtoY(this.viewportSize.height, 100)
+
+    // track width
+    this.track({
+      category : 'Viewport',
+      action   : 'Initial Width',
+      label    : String(this.simpleWidth)
     })
 
-    /**
-     * Notify GA of the initial viewport related metrics
-     **/
-    this.__trackomatic__.notifyGA('event', 'FED Viewport Size', String(this.simpleViewportSize), this.viewportRatio, 0, { 'nonInteraction': 1 })
+    // track height
+    this.track({
+      category : 'Viewport',
+      action   : 'Initial Height',
+      label    : String(this.simpleHeight)
+    })
 
-    /**
-     * Set up event listeners for viewport tracking
-     **/
+    // track ratio
+    this.track({
+      category : 'Viewport',
+      action   : 'Initial Ratio',
+      label    : String(this.viewportRatio)
+    })
+
+    // Set up event listeners for viewport tracking
     this.listen()
   }
 
@@ -36,6 +53,9 @@ class ViewportTrackingPlugin extends BasePlugin {
    *
    * For all browsers listen to orientationchange events
    * and update dimensions in response
+   *
+   * @function listen
+   * @returns { Void }
    */
   listen() {
     window.addEventListener(
@@ -44,7 +64,8 @@ class ViewportTrackingPlugin extends BasePlugin {
       false
     )
 
-    if (this.__trackomatic__.config.NON_MOBILE_PLATFORM) {
+    // if NOT a mobile platform
+    if (!this.__trackomatic__.config.MOBILE_PLATFORM) {
       window.addEventListener(
         'resize',
         this.__trackomatic__.util.debounce(this.trackViewportChanges.bind(this), 1000),
@@ -56,34 +77,51 @@ class ViewportTrackingPlugin extends BasePlugin {
   /**
    * Updates viewportSize and reports relative changes to GA
    * in response to window resize or orientation changes
+   *
+   * @function trackViewportChanges
+   * @returns { Void }
    */
   trackViewportChanges() {
-    let event = {}
-    let size  = this.__trackomatic__.util.getViewportSize()
+    let size    = this.__trackomatic__.util.getViewportSize()
+    let changes = this.calculateViewportChanges(size, this.viewportSize)
 
-    // Height changed
-    if (size.height > this.viewportSize.height) {
-      event['fed-resize-height'] = 'taller'
-      this.__trackomatic__.notifyGA('event', 'FED Viewport Resize', 'FED Resize Height', 'taller', 0, { 'nonInteraction': 1 })
-    } else if (size.height < this.viewportSize.height) {
-      event['fed-resize-height'] = 'shorter'
-      this.__trackomatic__.notifyGA('event', 'FED Viewport Resize', 'FED Resize Height', 'shorter', 0, { 'nonInteraction': 1 })
+    // Track height changes
+    if (changes.height) {
+      this.track({
+        category : 'Viewport',
+        action   : 'Resize Height',
+        label    : changes.height
+      })
     }
 
-    // Width changed
-    if (size.width > this.viewportSize.width) {
-      event['fed-resize-width'] = 'wider'
-      this.__trackomatic__.notifyGA('event', 'FED Viewport Resize', 'FED Resize Width', 'wider', 0, { 'nonInteraction': 1 })
-    } else if (size.width < this.viewportSize.width) {
-      event['fed-resize-width'] = 'narrower'
-      this.__trackomatic__.notifyGA('event', 'FED Viewport Resize', 'FED Resize Width', 'narrower', 0, { 'nonInteraction': 1 })
+    // Track width changes
+    if (changes.width) {
+      this.track({
+        category : 'Viewport',
+        action   : 'Resize Width',
+        label    : changes.width
+      })
     }
 
     this.viewportSize = size
-
-    // Push this viewport change event to GTM
-    this.__trackomatic__.notifyGTM(event)
   }
+
+  /**
+   * Updates viewportSize and reports relative changes to GA
+   * in response to window resize or orientation changes
+   *
+   * @function calculateViewportChanges
+   * @param { Object }   p - The "previous" viewport size
+   * @param { Obejct }   n - The "next" viewport size
+   * @returns { Object }   - Relative width and height changes
+   */
+  calculateViewportChanges(p, n) {
+    return {
+      height : p.height > n.height ? 'taller' : p.height < n.height ? 'shorter'  : null,
+      width  : p.width  > n.width  ? 'wider'  : p.width  < n.width  ? 'narrower' : null
+    }
+  }
+
 }
 
-module.exports = ViewportTrackingPlugin
+export default ViewportTrackingPlugin
