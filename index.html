@@ -16,14 +16,41 @@
       ga('t1.send', 'pageview');
     </script>
 
+    <ul>
+      <li><a href="#foo">Should not fire (hash url)</a></li>
+      <li><a href="/foo">Should not fire (same domain)</a></li>
+      <li><span>Should not fire (span)</span></li>
+      <li><button>Should not fire (button)</button></li>
+      <li><a href="http://viget.com#bar">Should fire</a></li>
+      <li><a href="http://pinterest.com">Should fire</a></li>
+      <li><a href="http://viget.com/sample.pdf">Should fire</a></li>
+      <li><a href="mailto:albert.wavering@viget.com">Should fire</a></li>
+      <li><a href="tel:+7038910670">Should fire</a></li>
+      <li><a href="http://google.com" target="_blank">Should fire (and open new window)</a></li>
+      <li><a href="http://google.com" data-trackomatic="Category|Action">Should fire (data-trackomatic attribute, auto-label)</a></li>
+      <li><a href="http://google.com" data-trackomatic="Category|Action|Label">Should fire (data-trackomatic attribute, defined label)</a></li>
+      <li id="inject1"></li>
+      <li id="inject2"></li>
+    </ul>
 
-    <a href="#foo">Should not fire</a>
-    <a href="http://viget.com#bar">Should fire</a>
-    <a href="http://pinterest.com">Should fire</a>
-    <a href="http://viget.com/sample.pdf">Should fire</a>
-    <a href="mailto:albert.wavering@viget.com">Should fire</a>
-    <a href="tel:+7038910670">Should fire</a>
+    <script>
+      setTimeout(function() {
+        var a = document.createElement('a')
+        var p = document.getElementById('inject1')
+        a.href        = '#foo'
+        a.innerHTML   = 'Should not fire - #foo dynamically injected'
+        p.appendChild(a)
+      }, 1000)
 
-    <script src="dist/trackomatic.js"></script>
+      setTimeout(function() {
+        var a = document.createElement('a')
+        var p = document.getElementById('inject2')
+        a.href        = 'http://pinterest.com'
+        a.innerHTML   = 'Should fire - pinterest.com dynamically injected'
+        p.appendChild(a)
+      }, 1000)
+    </script>
+
+    <script src="public/0.1.0/trackomatic.dev.js"></script>
   </body>
 </html>
