@@ -1,0 +1,396 @@
+{
+  "type": "Program",
+  "start": 0,
+  "end": 262,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 7,
+      "column": 0
+    }
+  },
+  "sourceType": "module",
+  "body": [
+    {
+      "type": "ExportDefaultDeclaration",
+      "start": 0,
+      "end": 261,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 6,
+          "column": 1
+        }
+      },
+      "declaration": {
+        "type": "ObjectExpression",
+        "start": 15,
+        "end": 261,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 15
+          },
+          "end": {
+            "line": 6,
+            "column": 1
+          }
+        },
+        "properties": [
+          {
+            "type": "Property",
+            "start": 19,
+            "end": 73,
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 2
+              },
+              "end": {
+                "line": 2,
+                "column": 56
+              }
+            },
+            "method": false,
+            "shorthand": false,
+            "computed": false,
+            "key": {
+              "type": "Identifier",
+              "start": 19,
+              "end": 35,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 2
+                },
+                "end": {
+                  "line": 2,
+                  "column": 18
+                }
+              },
+              "name": "firstInputPlugin"
+            },
+            "value": {
+              "type": "CallExpression",
+              "start": 44,
+              "end": 73,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 27
+                },
+                "end": {
+                  "line": 2,
+                  "column": 56
+                }
+              },
+              "callee": {
+                "type": "Identifier",
+                "start": 44,
+                "end": 51,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 27
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 34
+                  }
+                },
+                "name": "require"
+              },
+              "arguments": [
+                {
+                  "type": "Literal",
+                  "start": 52,
+                  "end": 72,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 35
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 55
+                    }
+                  },
+                  "value": "./firstInputPlugin",
+                  "rawValue": "./firstInputPlugin",
+                  "raw": "'./firstInputPlugin'"
+                }
+              ]
+            },
+            "kind": "init"
+          },
+          {
+            "type": "Property",
+            "start": 77,
+            "end": 135,
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 2
+              },
+              "end": {
+                "line": 3,
+                "column": 60
+              }
+            },
+            "method": false,
+            "shorthand": false,
+            "computed": false,
+            "key": {
+              "type": "Identifier",
+              "start": 77,
+              "end": 97,
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 2
+                },
+                "end": {
+                  "line": 3,
+                  "column": 22
+                }
+              },
+              "name": "errorReportingPlugin"
+            },
+            "value": {
+              "type": "CallExpression",
+              "start": 102,
+              "end": 135,
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 27
+                },
+                "end": {
+                  "line": 3,
+                  "column": 60
+                }
+              },
+              "callee": {
+                "type": "Identifier",
+                "start": 102,
+                "end": 109,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 27
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 34
+                  }
+                },
+                "name": "require"
+              },
+              "arguments": [
+                {
+                  "type": "Literal",
+                  "start": 110,
+                  "end": 134,
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 35
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 59
+                    }
+                  },
+                  "value": "./errorReportingPlugin",
+                  "rawValue": "./errorReportingPlugin",
+                  "raw": "'./errorReportingPlugin'"
+                }
+              ]
+            },
+            "kind": "init"
+          },
+          {
+            "type": "Property",
+            "start": 139,
+            "end": 195,
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 2
+              },
+              "end": {
+                "line": 4,
+                "column": 58
+              }
+            },
+            "method": false,
+            "shorthand": false,
+            "computed": false,
+            "key": {
+              "type": "Identifier",
+              "start": 139,
+              "end": 157,
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 2
+                },
+                "end": {
+                  "line": 4,
+                  "column": 20
+                }
+              },
+              "name": "linkTrackingPlugin"
+            },
+            "value": {
+              "type": "CallExpression",
+              "start": 164,
+              "end": 195,
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 27
+                },
+                "end": {
+                  "line": 4,
+                  "column": 58
+                }
+              },
+              "callee": {
+                "type": "Identifier",
+                "start": 164,
+                "end": 171,
+                "loc": {
+                  "start": {
+                    "line": 4,
+                    "column": 27
+                  },
+                  "end": {
+                    "line": 4,
+                    "column": 34
+                  }
+                },
+                "name": "require"
+              },
+              "arguments": [
+                {
+                  "type": "Literal",
+                  "start": 172,
+                  "end": 194,
+                  "loc": {
+                    "start": {
+                      "line": 4,
+                      "column": 35
+                    },
+                    "end": {
+                      "line": 4,
+                      "column": 57
+                    }
+                  },
+                  "value": "./linkTrackingPlugin",
+                  "rawValue": "./linkTrackingPlugin",
+                  "raw": "'./linkTrackingPlugin'"
+                }
+              ]
+            },
+            "kind": "init"
+          },
+          {
+            "type": "Property",
+            "start": 199,
+            "end": 259,
+            "loc": {
+              "start": {
+                "line": 5,
+                "column": 2
+              },
+              "end": {
+                "line": 5,
+                "column": 62
+              }
+            },
+            "method": false,
+            "shorthand": false,
+            "computed": false,
+            "key": {
+              "type": "Identifier",
+              "start": 199,
+              "end": 221,
+              "loc": {
+                "start": {
+                  "line": 5,
+                  "column": 2
+                },
+                "end": {
+                  "line": 5,
+                  "column": 24
+                }
+              },
+              "name": "viewportTrackingPlugin"
+            },
+            "value": {
+              "type": "CallExpression",
+              "start": 224,
+              "end": 259,
+              "loc": {
+                "start": {
+                  "line": 5,
+                  "column": 27
+                },
+                "end": {
+                  "line": 5,
+                  "column": 62
+                }
+              },
+              "callee": {
+                "type": "Identifier",
+                "start": 224,
+                "end": 231,
+                "loc": {
+                  "start": {
+                    "line": 5,
+                    "column": 27
+                  },
+                  "end": {
+                    "line": 5,
+                    "column": 34
+                  }
+                },
+                "name": "require"
+              },
+              "arguments": [
+                {
+                  "type": "Literal",
+                  "start": 232,
+                  "end": 258,
+                  "loc": {
+                    "start": {
+                      "line": 5,
+                      "column": 35
+                    },
+                    "end": {
+                      "line": 5,
+                      "column": 61
+                    }
+                  },
+                  "value": "./viewportTrackingPlugin",
+                  "rawValue": "./viewportTrackingPlugin",
+                  "raw": "'./viewportTrackingPlugin'"
+                }
+              ]
+            },
+            "kind": "init"
+          }
+        ],
+        "leadingComments": [],
+        "trailingComments": []
+      }
+    }
+  ]
+}

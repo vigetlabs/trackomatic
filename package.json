@@ -1,0 +1,48 @@
+{
+  "name": "trackomatic",
+  "version": "0.1.0",
+  "description": "Viget Labs' GA Tracking Extensions",
+  "main": "public/trackomatic.min.js",
+  "scripts": {
+    "test": "karma start config/karma.js --single-run",
+    "test:watch": "karma start config/karma.js",
+    "dev": "./node_modules/.bin/webpack --watch --config config/webpack.js",
+    "build": "./bin/build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vigetlabs/trackomatic.git"
+  },
+  "author": "Solomon Hawk <solomon.hawk@viget.com> (http://viget.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vigetlabs/trackomatic/issues"
+  },
+  "homepage": "https://github.com/vigetlabs/trackomatic",
+  "devDependencies": {
+    "assert": "^1.3.0",
+    "babel": "^5.8.23",
+    "babel-core": "^5.8.24",
+    "babel-loader": "^5.3.2",
+    "chai": "^3.3.0",
+    "esdoc": "^0.3.1",
+    "esdoc-es7-plugin": "0.0.2",
+    "gzip-js": "^0.3.2",
+    "json-loader": "^0.5.2",
+    "karma": "^0.13.10",
+    "karma-chai": "^0.1.0",
+    "karma-chai-sinon": "^0.1.5",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-mocha": "^0.2.0",
+    "karma-mocha-reporter": "^1.1.1",
+    "karma-webpack": "^1.7.0",
+    "mocha": "^2.3.3",
+    "sinon": "^1.17.1",
+    "sinon-chai": "^2.8.0",
+    "webpack": "^1.12.1"
+  },
+  "dependencies": {
+    "domready": "^1.0.8"
+  }
+}

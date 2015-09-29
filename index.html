@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="https://github.com/vigetlabs/trackomatic.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/plugin.js~Plugin.html">Plugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/trackomatic.js~Trackomatic.html">Trackomatic</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-once">once</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-providePlugin">providePlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-config">config</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-plugin">plugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-trackomatic">trackomatic</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-util">util</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">plugins</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/plugins/errorReportingPlugin.js~ErrorReportingPlugin.html">ErrorReportingPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/plugins/firstInputPlugin.js~FirstInputPlugin.html">FirstInputPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/plugins/linkTrackingPlugin.js~LinkTrackingPlugin.html">LinkTrackingPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/plugins/viewportTrackingPlugin.js~ViewportTrackingPlugin.html">ViewportTrackingPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-errorReportingPlugin">errorReportingPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstInputPlugin">firstInputPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-linkTrackingPlugin">linkTrackingPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-viewportTrackingPlugin">viewportTrackingPlugin</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="trackomatic-automatic-google-analytics-tracking">Trackomatic: Automatic Google Analytics Tracking</h1>
+<h2 id="about">About</h2>
+<p>Trackomatic is a high-performance tracking enhancement for Google Analytics. It standardizes common tracking setups and saves setup time. </p>
+<p>Note: Trackomatic.js is only compatible with Universal Analytics (analytics.js), not the older asynchronous Google Analytics (ga.js).</p>
+<h2 id="installation">Installation</h2>
+<p>To use Trackomatic, simply load trackomatic.js on your site and configure it as a plugin in your existing Google Analytics snippet. If you have installed GA through Google Tag Manager, you&apos;ll have to set a custom field.</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">ga(&apos;create&apos;, &apos;UA-XXXXX-Y&apos;, &apos;auto&apos;);
+ga(&apos;require&apos;, &apos;trackomatic&apos;);
+ga(&apos;send&apos;, &apos;pageview&apos;);</code>
+</code></pre>
+<h2 id="custom-events">Custom Events</h2>
+<ul>
+<li>JS errors: when an on-page script throws an error, we send some basic diagnostic information back to GA.</li>
+<li>Viewport size: GA already tracks screen resolutions, but many people size their browser to only take up part of their screen, which can impact how we display content. Trackomatic fires an event when the page loads with details of viewport size and ratio.</li>
+<li>Viewport resize: when a visitor resizes their browser, Trackomatic fires an event with additional details.</li>
+<li>Generic click tracking: clicks on files, outbound links, email links, and telephone links.</li>
+<li>First input method: after filtering out inputs used for scrolling, what is the first input type used on a webpage?</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<p>Trackomatic accepts parameters to customize its tracking. Configuration parameters are passed as a configuration object when you initialize a plugin instance.</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">ga(&apos;create&apos;, &apos;UA-XXXXX-Y&apos;, &apos;auto&apos;);
+ga(&apos;require&apos;, &apos;trackomatic&apos;, {
+    files: &apos;\.pdf|\.docx|\.pptx&apos;, 
+    networks: &apos;reddit\.com&apos;, 
+    redirectDelay: 100
+});
+ga(&apos;send&apos;, &apos;pageview&apos;);</code>
+</code></pre>
+<h3 id="configuration-options-">Configuration Options:</h3>
+<p><strong>debug</strong>: <code>true || false</code>, if <code>true</code> then replaces calls to <code>tracker.send</code>(GA) and <code>dataLayer.push</code>(GTM) with <code>console.log</code> statements.</p>
+<p><strong>files</strong>: takes a regex of file extensions to check against, and will fire an event on click. If no files are specified, Trackomatic will check for .pdf files only.</p>
+<p><strong>networks</strong>: takes an array of string social media network URLs, and fires an event on click. If no networks are specified, Trackomatic will track the following networks:</p>
+<ul>
+<li>Facebook</li>
+<li>Twitter</li>
+<li>Instagram</li>
+<li>LinkedIn</li>
+<li>Pinterest</li>
+<li>Tumblr</li>
+<li>Google Plus</li>
+</ul>
+<p><strong>prefix</strong>: default: &quot;trackomatic&quot;. All events reported to GA / GTM will be prefixed with this string followed by a hyphen. (e.g. <code>trackomatic-first-input</code>)</p>
+<p><strong>redirectDelay</strong>: to make sure our tracking data reaches Google&#x2019;s servers before a page reloads, Trackomatic adds in a small delay before loading the new page. By default, this delay is 100 milliseconds. You can make it longer or shorter if you prefer.</p>
+<h2 id="public-functions">Public Functions</h2>
+<p>Trackomatic.js makes certain internal utility functions public by way of the global trackomatic object. The following functions are available under trackomatic.util:</p>
+<ul>
+<li>capitalize</li>
+<li>createAnchor</li>
+<li>createCookie</li>
+<li>createNavigationHandler</li>
+<li>debounce</li>
+<li>getHost</li>
+<li>getLink</li>
+<li>getPathname</li>
+<li>getViewportSize</li>
+<li>keyCode</li>
+<li>readCookie</li>
+<li>getURLParams</li>
+<li>roundXtoY</li>
+<li>slugify</li>
+</ul>
+<h2 id="error-reporting">Error Reporting</h2>
+<p>Use AirBrake if you can</p>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

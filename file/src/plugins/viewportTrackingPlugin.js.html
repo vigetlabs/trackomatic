@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/plugins/viewportTrackingPlugin.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="https://github.com/vigetlabs/trackomatic.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/plugin.js~Plugin.html">Plugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/trackomatic.js~Trackomatic.html">Trackomatic</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-once">once</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-providePlugin">providePlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-config">config</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-plugin">plugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-trackomatic">trackomatic</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-util">util</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">plugins</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/plugins/errorReportingPlugin.js~ErrorReportingPlugin.html">ErrorReportingPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/plugins/firstInputPlugin.js~FirstInputPlugin.html">FirstInputPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/plugins/linkTrackingPlugin.js~LinkTrackingPlugin.html">LinkTrackingPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/plugins/viewportTrackingPlugin.js~ViewportTrackingPlugin.html">ViewportTrackingPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-errorReportingPlugin">errorReportingPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstInputPlugin">firstInputPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-linkTrackingPlugin">linkTrackingPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-viewportTrackingPlugin">viewportTrackingPlugin</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/plugins/viewportTrackingPlugin.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const BasePlugin = require(&apos;../plugin&apos;)
+
+/**
+ * Viewport tracking and peporting plugin
+ *
+ * @class ViewportTrackingPlugin
+ * @extends plugin as BasePlugin
+ */
+class ViewportTrackingPlugin extends BasePlugin {
+
+  /**
+   * The setup function for this plugin
+   *
+   * @function install
+   * @returns { Void }
+   */
+  install() {
+    let { util } = this.__trackomatic__
+
+    this.viewportSize  = util.getViewportSize()
+    this.viewportRatio = util.getViewportRatio(this.viewportSize)
+    this.simpleWidth   = util.roundXtoY(this.viewportSize.width, 100)
+    this.simpleHeight  = util.roundXtoY(this.viewportSize.height, 100)
+
+    // track width
+    this.track({
+      category : &apos;Viewport&apos;,
+      action   : &apos;Initial Width&apos;,
+      label    : String(this.simpleWidth)
+    })
+
+    // track height
+    this.track({
+      category : &apos;Viewport&apos;,
+      action   : &apos;Initial Height&apos;,
+      label    : String(this.simpleHeight)
+    })
+
+    // track ratio
+    this.track({
+      category : &apos;Viewport&apos;,
+      action   : &apos;Initial Ratio&apos;,
+      label    : String(this.viewportRatio)
+    })
+
+    // Set up event listeners for viewport tracking
+    this.listen()
+  }
+
+  /**
+   * For browsers that aren&apos;t iDevices or Android phones,
+   * listen to resize events and update dimensions in response.
+   *
+   * For all browsers listen to orientationchange events
+   * and update dimensions in response
+   *
+   * @function listen
+   * @returns { Void }
+   */
+  listen() {
+    window.addEventListener(
+      &apos;orientationchange&apos;,
+      this.__trackomatic__.util.debounce(this.trackViewportChanges.bind(this), 1000),
+      false
+    )
+
+    // if NOT a mobile platform
+    if (!this.__trackomatic__.config.MOBILE_PLATFORM) {
+      window.addEventListener(
+        &apos;resize&apos;,
+        this.__trackomatic__.util.debounce(this.trackViewportChanges.bind(this), 1000),
+        false
+      )
+    }
+  }
+
+  /**
+   * Updates viewportSize and reports relative changes to GA
+   * in response to window resize or orientation changes
+   *
+   * @function trackViewportChanges
+   * @returns { Void }
+   */
+  trackViewportChanges() {
+    let size    = this.__trackomatic__.util.getViewportSize()
+    let changes = this.calculateViewportChanges(size, this.viewportSize)
+
+    // Track height changes
+    if (changes.height) {
+      this.track({
+        category : &apos;Viewport&apos;,
+        action   : &apos;Resize Height&apos;,
+        label    : changes.height
+      })
+    }
+
+    // Track width changes
+    if (changes.width) {
+      this.track({
+        category : &apos;Viewport&apos;,
+        action   : &apos;Resize Width&apos;,
+        label    : changes.width
+      })
+    }
+
+    this.viewportSize = size
+  }
+
+  /**
+   * Updates viewportSize and reports relative changes to GA
+   * in response to window resize or orientation changes
+   *
+   * @function calculateViewportChanges
+   * @param { Object }   p - The &quot;previous&quot; viewport size
+   * @param { Obejct }   n - The &quot;next&quot; viewport size
+   * @returns { Object }   - Relative width and height changes
+   */
+  calculateViewportChanges(p, n) {
+    return {
+      height : p.height &gt; n.height ? &apos;taller&apos; : p.height &lt; n.height ? &apos;shorter&apos;  : null,
+      width  : p.width  &gt; n.width  ? &apos;wider&apos;  : p.width  &lt; n.width  ? &apos;narrower&apos; : null
+    }
+  }
+
+}
+
+export default ViewportTrackingPlugin
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
