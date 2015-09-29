@@ -6,7 +6,7 @@ const BasePlugin = require('../plugin')
  * Should use exception tracking in next version:
  * https://developers.google.com/analytics/devguides/collection/analyticsjs/exceptions
  *
- * @extends {Plugin}
+ * @extends { Plugin }
  */
 class ErrorReportingPlugin extends BasePlugin {
 

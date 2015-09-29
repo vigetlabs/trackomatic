@@ -13,7 +13,7 @@ const util = {
 
   /**
    * Allows easy extraction of domain, pathname, etc off of a full URL.
-   * @param {string} href - the url to parse
+   * @param { String } href - the url to parse
    */
   createAnchor(href) {
     var target = document.createElement('a')
@@ -23,7 +23,7 @@ const util = {
 
   /**
    * A small wrapper for `createAnchor` that returns just the `pathname`
-   * @param {string} href - the url to parse
+   * @param { String } href - the url to parse
    */
   getPathname(href) {
     // normalize the pathname, since IE omits the leading slash.
@@ -32,7 +32,7 @@ const util = {
 
   /**
    * Capitalizes the first letter of a string. Useful for combining inconsistent data sources.
-   * @param {string} string - the string to capitalize
+   * @param { String } string - the string to capitalize
    */
   capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
@@ -41,9 +41,8 @@ const util = {
   /**
    * Turns strings into slugs - useful for combining inconsistent data sources
    *
-   * @function slugify
-   * @param   { String } text - the string to slugify
-   * @returns { String }      - the slugified string
+   * @param  { String } text - the string to slugify
+   * @return { String }      - the slugified string
    */
   slugify(text) {
     return text.toString()
@@ -52,7 +51,7 @@ const util = {
       .replace(config.REGEX.NON_WORD, '')          // Remove all non-word chars
       .replace(config.REGEX.MULTIPLE_HYPHENS, '-') // Replace multiple - with single -
       .replace(config.REGEX.LEADING_HYPHENS, '')   // Trim - from start of text
-      .replace(config.REGEX.TRAILING_HYPHENS, '') // Trim - from end of text
+      .replace(config.REGEX.TRAILING_HYPHENS, '')  // Trim - from end of text
   },
 
   /**
@@ -64,9 +63,10 @@ const util = {
 
   /**
    * Writes cookies. This function is a no-op if `_trackomatic.options.nocookie` is `true`.
-   * @param {string} name - the name for the cookie value
-   * @param {mixed} value - the value to be stored as a cookie
-   * @param {number} days - the number of days to store the cookie for
+   * @param  { String } name  - the name for the cookie value
+   * @param  { Mixed }  value - the value to be stored as a cookie
+   * @param  { Number } days  - the number of days to store the cookie for
+   * @return { Void }
    */
   createCookie(name, value, days) {
     if(_trackomatic.options.nocookie) return
@@ -179,9 +179,8 @@ const util = {
   /**
    * Wraps a function and guards it from being invoked more than once
    *
-   * @function callOnce
-   * @param   { Function } fn - the function to guard
-   * @returns { Function }    - the wrapped function
+   * @param  { Function } fn - the function to guard
+   * @return { Function }    - the wrapped function
    */
   callOnce(fn) {
     let called = false

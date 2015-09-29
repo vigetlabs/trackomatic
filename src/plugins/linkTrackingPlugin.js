@@ -3,15 +3,13 @@ const BasePlugin = require('../plugin')
 /**
  * Tracks link clicks
  *
- * @class LinkTrackingPlugin
- * @extends plugin as BasePlugin
+ * @extends { Plugin }
  */
 class LinkTrackingPlugin extends BasePlugin {
 
   /**
    * The setup function for this plugin
    *
-   * @function install
    * @returns { Void }
    */
   install() {
@@ -21,7 +19,6 @@ class LinkTrackingPlugin extends BasePlugin {
   /**
    * Callback for link click events
    *
-   * @function onLinkClick
    * @param   { Object } e - the event object
    * @returns { Void }
    **/
@@ -40,7 +37,6 @@ class LinkTrackingPlugin extends BasePlugin {
   /**
    * Extracts tracking parameters from a clicked link
    *
-   * @function getVisitData
    * @param   { Object } e    - the event object
    * @param   { Node }   link - the node that was clicked
    * @returns { Object }      - the extracted category, action, and label for this link
@@ -77,7 +73,6 @@ class LinkTrackingPlugin extends BasePlugin {
   /**
    * Extracts a tracking category and action based on the url of a clicked link
    *
-   * @function extractAutoTrackingAttributes
    * @param   { String }        url - The href of the clicked link
    * @returns { Void | Object }     - Extracted parameters based on matching of url
    **/
@@ -103,7 +98,6 @@ class LinkTrackingPlugin extends BasePlugin {
   /**
    * Reports tracking data for the clicked link and then redirects to the link url.
    *
-   * @function interceptVisit
    * @param   { Object } e      - The event object
    * @param   { Node }   link   - The clicked link
    * @param   { Object } params - Category, action, and label
@@ -131,7 +125,6 @@ class LinkTrackingPlugin extends BasePlugin {
    * is on this function will return a noop. The redirect function is protected
    * by callOnce which prevents it from being called multiple times.
    *
-   * @function createRedirect
    * @param   { Node }            link - The clicked link
    * @returns { Void | Function }      - Protected redirect function
    **/

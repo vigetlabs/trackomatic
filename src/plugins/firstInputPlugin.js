@@ -4,16 +4,14 @@ const once       = require('../once')
 /**
  * Tracks what the first interaction mode is (mouse, touch, keyboard)
  *
- * @class FirstInputPlugin
- * @extends plugin as BasePlugin
+ * @extends { Plugin }
  */
 class FirstInputPlugin extends BasePlugin {
 
   /**
    * The setup function for this plugin
    *
-   * @function install
-   * @returns { Void }
+   * @return { Void }
    */
   install() {
     this.firstInputRecorded = false
@@ -26,8 +24,7 @@ class FirstInputPlugin extends BasePlugin {
   /**
    * Returns the proper name of the mouse event for this environment
    *
-   * @function getMouseEvent
-   * @returns { String } - the name of the mouse event for this browser
+   * @return { String } - the name of the mouse event for this browser
    **/
   getMouseEvent() {
     let event = 'mousedown'
@@ -44,9 +41,8 @@ class FirstInputPlugin extends BasePlugin {
   /**
    * Callback for mouse input events
    *
-   * @function onMouseInput
-   * @param { Object } e - the event object
-   * @returns { Void }
+   * @param  { Object } e - the event object
+   * @return { Void }
    **/
   onMouseInput(e) {
     this.recordFirstInput('mouse', this.__trackomatic__.util.keyCode(e))
@@ -55,9 +51,8 @@ class FirstInputPlugin extends BasePlugin {
   /**
    * Callback for touch input events
    *
-   * @function onTouchInput
-   * @param { Object } e - the event object
-   * @returns { Void }
+   * @param  { Object } e - the event object
+   * @return { Void }
    **/
   onTouchInput(e) {
     this.recordFirstInput('touch', this.__trackomatic__.util.keyCode(e))
@@ -66,9 +61,8 @@ class FirstInputPlugin extends BasePlugin {
   /**
    * Callback for keyboard input events
    *
-   * @function onKeyboardInput
-   * @param { Object } e - the event object
-   * @returns { Void }
+   * @param  { Object } e - the event object
+   * @return { Void }
    **/
   onKeyboardInput(e) {
     e = e || window.event
