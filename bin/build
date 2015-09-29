@@ -35,25 +35,33 @@ spawn(
  * Prepare public folder for deployment by symlinking 'latest'
  * to the most recent build of Trackomatic
  **/
-var latestDirPath = path.join(__dirname, '..', 'public', 'latest')
+var publicDirPath  = path.join(__dirname, '..', 'public')
+var latestDirPath  = path.join(__dirname, '..', 'public', 'latest')
 var currentDirPath = path.join(__dirname, '..', 'public', project.version)
+var relativePath   = path.relative(publicDirPath, currentDirPath)
 
-fs.stat(latestDirPath, function(err, stats) {
+fs.lstat(latestDirPath, function(err, stats) {
   // if the 'latest' directory doesn't exist, err will be truthy
   if (!err) {
-    // in that case, unlink the 'public/latest' symlink
-    fs.unlinkSync(latestDirPath)
+    // remove/unlink the file/symlink
+    if (stats.isSymbolicLink() || stats.isFile()) {
+      fs.unlinkSync(latestDirPath)
+    // remove directory
+    } else {
+      fs.rmdirSync(latestDirPath)
+    }
   }
 
   // then, create a symlink from 'public/latest' to
   // the folder containing the most recent build
   fs.symlink(
-    currentDirPath,
+    relativePath,
     latestDirPath,
     'dir',
     function(err) {
       if (err) {
         console.log('Build Error: Could not create a symlink between %s and %s', latestDirPath, currentDirPath)
+        console.log(err)
       }
     }
   )
