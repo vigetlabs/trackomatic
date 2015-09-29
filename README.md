@@ -6,6 +6,9 @@ Trackomatic is a high-performance tracking enhancement for Google Analytics. It 
 
 Note: Trackomatic.js is only compatible with Universal Analytics (analytics.js), not the older asynchronous Google Analytics (ga.js).
 
+See: http://code.viget.com/trackomatic
+
+
 ## Installation
 
 To use Trackomatic, simply load trackomatic.js on your site and configure it as a plugin in your existing Google Analytics snippet. If you have installed GA through Google Tag Manager, you'll have to set a custom field.
