@@ -8,6 +8,10 @@ Note: Trackomatic.js is only compatible with Universal Analytics (analytics.js),
 
 See: http://code.viget.com/trackomatic
 
+## CDN
+
+https://d1lmnvs8gamzin.cloudfront.net/1.1.0/trackomatic.dev.js
+https://d1lmnvs8gamzin.cloudfront.net/1.1.0/trackomatic.min.js
 
 ## Installation
 
