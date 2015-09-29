@@ -7,6 +7,8 @@
     "test": "karma start config/karma.js --single-run",
     "test:watch": "karma start config/karma.js",
     "dev": "./node_modules/.bin/webpack --watch --config config/webpack.js",
+    "docs": "./node_modules/.bin/esdoc -c config/esdoc.json",
+    "docs:publish": "git subtree push --prefix docs origin gh-pages",
     "build": "./bin/build",
     "deploy": "cap deploy"
   },
