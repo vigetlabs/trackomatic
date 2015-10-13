@@ -1,0 +1,83 @@
+{
+  "coverage": "66.03%",
+  "expectCount": 53,
+  "actualCount": 35,
+  "files": {
+    "src/plugins/errorReportingPlugin.js": {
+      "expectCount": 4,
+      "actualCount": 2,
+      "undocumentLines": [
+        38,
+        19
+      ]
+    },
+    "src/plugins/firstInputPlugin.js": {
+      "expectCount": 9,
+      "actualCount": 7,
+      "undocumentLines": [
+        120,
+        17
+      ]
+    },
+    "src/plugins/linkTrackingPlugin.js": {
+      "expectCount": 8,
+      "actualCount": 7,
+      "undocumentLines": [
+        144
+      ]
+    },
+    "src/plugin.js": {
+      "expectCount": 5,
+      "actualCount": 4,
+      "undocumentLines": [
+        34
+      ]
+    },
+    "src/trackomatic.js": {
+      "expectCount": 13,
+      "actualCount": 8,
+      "undocumentLines": [
+        22,
+        24,
+        23,
+        146,
+        21
+      ]
+    },
+    "src/plugins/viewportTrackingPlugin.js": {
+      "expectCount": 10,
+      "actualCount": 5,
+      "undocumentLines": [
+        21,
+        20,
+        19,
+        18,
+        122
+      ]
+    },
+    "src/config.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/once.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/provide.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/util.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    }
+  }
+}

@@ -1,0 +1,264 @@
+{
+  "type": "Program",
+  "start": 0,
+  "end": 194,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 9,
+      "column": 0
+    }
+  },
+  "sourceType": "module",
+  "body": [
+    {
+      "type": "ExportDefaultDeclaration",
+      "start": 81,
+      "end": 193,
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 0
+        },
+        "end": {
+          "line": 8,
+          "column": 1
+        }
+      },
+      "declaration": {
+        "type": "LogicalExpression",
+        "start": 100,
+        "end": 191,
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 2
+          },
+          "end": {
+            "line": 7,
+            "column": 30
+          }
+        },
+        "left": {
+          "type": "LogicalExpression",
+          "start": 100,
+          "end": 157,
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 2
+            },
+            "end": {
+              "line": 6,
+              "column": 26
+            }
+          },
+          "left": {
+            "type": "BinaryExpression",
+            "start": 100,
+            "end": 127,
+            "loc": {
+              "start": {
+                "line": 5,
+                "column": 2
+              },
+              "end": {
+                "line": 5,
+                "column": 29
+              }
+            },
+            "left": {
+              "type": "Literal",
+              "start": 100,
+              "end": 115,
+              "loc": {
+                "start": {
+                  "line": 5,
+                  "column": 2
+                },
+                "end": {
+                  "line": 5,
+                  "column": 17
+                }
+              },
+              "value": "querySelector",
+              "rawValue": "querySelector",
+              "raw": "'querySelector'",
+              "leadingComments": null
+            },
+            "operator": "in",
+            "right": {
+              "type": "Identifier",
+              "start": 119,
+              "end": 127,
+              "loc": {
+                "start": {
+                  "line": 5,
+                  "column": 21
+                },
+                "end": {
+                  "line": 5,
+                  "column": 29
+                }
+              },
+              "name": "document"
+            },
+            "leadingComments": null
+          },
+          "operator": "&&",
+          "right": {
+            "type": "BinaryExpression",
+            "start": 133,
+            "end": 157,
+            "loc": {
+              "start": {
+                "line": 6,
+                "column": 2
+              },
+              "end": {
+                "line": 6,
+                "column": 26
+              }
+            },
+            "left": {
+              "type": "Literal",
+              "start": 133,
+              "end": 147,
+              "loc": {
+                "start": {
+                  "line": 6,
+                  "column": 2
+                },
+                "end": {
+                  "line": 6,
+                  "column": 16
+                }
+              },
+              "value": "localStorage",
+              "rawValue": "localStorage",
+              "raw": "'localStorage'"
+            },
+            "operator": "in",
+            "right": {
+              "type": "Identifier",
+              "start": 151,
+              "end": 157,
+              "loc": {
+                "start": {
+                  "line": 6,
+                  "column": 20
+                },
+                "end": {
+                  "line": 6,
+                  "column": 26
+                }
+              },
+              "name": "window"
+            }
+          },
+          "leadingComments": null
+        },
+        "operator": "&&",
+        "right": {
+          "type": "BinaryExpression",
+          "start": 163,
+          "end": 191,
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 2
+            },
+            "end": {
+              "line": 7,
+              "column": 30
+            }
+          },
+          "left": {
+            "type": "Literal",
+            "start": 163,
+            "end": 181,
+            "loc": {
+              "start": {
+                "line": 7,
+                "column": 2
+              },
+              "end": {
+                "line": 7,
+                "column": 20
+              }
+            },
+            "value": "addEventListener",
+            "rawValue": "addEventListener",
+            "raw": "'addEventListener'"
+          },
+          "operator": "in",
+          "right": {
+            "type": "Identifier",
+            "start": 185,
+            "end": 191,
+            "loc": {
+              "start": {
+                "line": 7,
+                "column": 24
+              },
+              "end": {
+                "line": 7,
+                "column": 30
+              }
+            },
+            "name": "window"
+          }
+        },
+        "leadingComments": [
+          {
+            "type": "Block",
+            "value": "*\n * These requirements define the class of browsers Trackomatic supports\n *",
+            "start": 0,
+            "end": 80,
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 0
+              },
+              "end": {
+                "line": 3,
+                "column": 4
+              }
+            },
+            "range": [
+              0,
+              80
+            ]
+          }
+        ],
+        "parenthesizedExpression": true,
+        "trailingComments": []
+      },
+      "leadingComments": [
+        {
+          "type": "Block",
+          "value": "*\n * These requirements define the class of browsers Trackomatic supports\n *",
+          "start": 0,
+          "end": 80,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 0
+            },
+            "end": {
+              "line": 3,
+              "column": 4
+            }
+          },
+          "range": [
+            0,
+            80
+          ]
+        }
+      ]
+    }
+  ]
+}
