@@ -15,15 +15,15 @@
       "expectCount": 9,
       "actualCount": 7,
       "undocumentLines": [
-        126,
-        19
+        120,
+        17
       ]
     },
     "src/plugins/linkTrackingPlugin.js": {
       "expectCount": 8,
       "actualCount": 7,
       "undocumentLines": [
-        151
+        144
       ]
     },
     "src/plugin.js": {
@@ -48,11 +48,11 @@
       "expectCount": 10,
       "actualCount": 5,
       "undocumentLines": [
-        23,
-        22,
         21,
         20,
-        127
+        19,
+        18,
+        122
       ]
     },
     "src/config.js": {

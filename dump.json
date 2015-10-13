@@ -351,7 +351,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "const BasePlugin = require('../plugin')\n\n/**\n * Tracks JavasSript errors with message and line number\n *\n * Should use exception tracking in next version:\n * https://developers.google.com/analytics/devguides/collection/analyticsjs/exceptions\n *\n * @extends {Plugin}\n */\nclass ErrorReportingPlugin extends BasePlugin {\n\n  /**\n   * The setup function for this plugin\n   *\n   * @returns { Void }\n   */\n  install() {\n    this.oldonerror = window.onerror\n\n    // this is prone to being replaced or overwritten\n    // by other libraries present in the page\n    // TODO: better error tracking\n    window.onerror = (msg, url, line) => {\n      if (this.oldonerror) {\n        this.oldonerror.apply(this, arguments)\n      }\n\n      this.track({\n        category : 'JavaScript Error',\n        action   : msg,\n        label    : `${ url } @ Line ${ line }`\n      })\n    }\n  }\n}\n\nexport default ErrorReportingPlugin\n"
+    "content": "const BasePlugin = require('../plugin')\n\n/**\n * Tracks JavasSript errors with message and line number\n *\n * Should use exception tracking in next version:\n * https://developers.google.com/analytics/devguides/collection/analyticsjs/exceptions\n *\n * @extends { Plugin }\n */\nclass ErrorReportingPlugin extends BasePlugin {\n\n  /**\n   * The setup function for this plugin\n   *\n   * @returns { Void }\n   */\n  install() {\n    this.oldonerror = window.onerror\n\n    // this is prone to being replaced or overwritten\n    // by other libraries present in the page\n    // TODO: better error tracking\n    window.onerror = (msg, url, line) => {\n      if (this.oldonerror) {\n        this.oldonerror.apply(this, arguments)\n      }\n\n      this.track({\n        category : 'JavaScript Error',\n        action   : msg,\n        label    : `${ url } @ Line ${ line }`\n      })\n    }\n  }\n}\n\nexport default ErrorReportingPlugin\n"
   },
   {
     "kind": "variable",
@@ -388,7 +388,7 @@
     "lineNumber": 11,
     "interface": false,
     "extends": [
-      "Plugin"
+      " Plugin "
     ]
   },
   {
@@ -465,7 +465,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "const BasePlugin = require('../plugin')\nconst once       = require('../once')\n\n/**\n * Tracks what the first interaction mode is (mouse, touch, keyboard)\n *\n * @class FirstInputPlugin\n * @extends plugin as BasePlugin\n */\nclass FirstInputPlugin extends BasePlugin {\n\n  /**\n   * The setup function for this plugin\n   *\n   * @function install\n   * @returns { Void }\n   */\n  install() {\n    this.firstInputRecorded = false\n\n    once(window, this.getMouseEvent(), this.onMouseInput.bind(this))\n    once(window, 'touchstart',         this.onTouchInput.bind(this))\n    once(window, 'keydown',            this.onKeyboardInput.bind(this))\n  }\n\n  /**\n   * Returns the proper name of the mouse event for this environment\n   *\n   * @function getMouseEvent\n   * @returns { String } - the name of the mouse event for this browser\n   **/\n  getMouseEvent() {\n    let event = 'mousedown'\n\n    if (window.PointerEvent) {\n      event = 'pointerdown'\n    } else if (window.MSPointerEvent) {\n      event = 'MSPointerDown'\n    }\n\n    return event\n  }\n\n  /**\n   * Callback for mouse input events\n   *\n   * @function onMouseInput\n   * @param { Object } e - the event object\n   * @returns { Void }\n   **/\n  onMouseInput(e) {\n    this.recordFirstInput('mouse', this.__trackomatic__.util.keyCode(e))\n  }\n\n  /**\n   * Callback for touch input events\n   *\n   * @function onTouchInput\n   * @param { Object } e - the event object\n   * @returns { Void }\n   **/\n  onTouchInput(e) {\n    this.recordFirstInput('touch', this.__trackomatic__.util.keyCode(e))\n  }\n\n  /**\n   * Callback for keyboard input events\n   *\n   * @function onKeyboardInput\n   * @param { Object } e - the event object\n   * @returns { Void }\n   **/\n  onKeyboardInput(e) {\n    e = e || window.event\n    let code      = this.__trackomatic__.util.keyCode(e)\n    let blacklist = this.__trackomatic__.config.EXCLUDED_KEYS\n\n    /**\n     * Intent is to filter out keys such as SPACE, UP, DOWN, etc.\n     * that a keyboard user might initially use in place of scrolling\n     */\n    let shouldRecordKey = true\n\n    if (e.metaKey || e.ctrlKey || e.altKey) {\n      shouldRecordKey = false\n    }\n\n    for (let key in blacklist) {\n      if (code === blacklist[key]) {\n        shouldRecordKey = false\n      }\n    }\n\n    if (shouldRecordKey) {\n      // track the first keycode\n      this.track({\n        category : 'First Input',\n        action   : 'First Keycode',\n        label    : code\n      })\n\n      // also attempt to track this as the first input\n      this.recordFirstInput('keyboard', code)\n    }\n  }\n\n  /**\n   * Tracks the first input used. Does nothing after the first call.\n   *\n   * @param { String } inputType - The type of interaction ('click', 'touchstart', etc.)\n   * @param { String } keyCode   - The code describing which key was pressed\n   */\n  recordFirstInput(inputType, keyCode) {\n    if (!this.firstInputRecorded) {\n      this.track({\n        category : 'First Input',\n        action   : inputType,\n        label    : keyCode\n      })\n\n      this.firstInputRecorded = true\n    }\n  }\n}\n\nexport default FirstInputPlugin\n"
+    "content": "const BasePlugin = require('../plugin')\nconst once       = require('../once')\n\n/**\n * Tracks what the first interaction mode is (mouse, touch, keyboard)\n *\n * @extends { Plugin }\n */\nclass FirstInputPlugin extends BasePlugin {\n\n  /**\n   * The setup function for this plugin\n   *\n   * @return { Void }\n   */\n  install() {\n    this.firstInputRecorded = false\n\n    once(window, this.getMouseEvent(), this.onMouseInput.bind(this))\n    once(window, 'touchstart',         this.onTouchInput.bind(this))\n    once(window, 'keydown',            this.onKeyboardInput.bind(this))\n  }\n\n  /**\n   * Returns the proper name of the mouse event for this environment\n   *\n   * @return { String } - the name of the mouse event for this browser\n   **/\n  getMouseEvent() {\n    let event = 'mousedown'\n\n    if (window.PointerEvent) {\n      event = 'pointerdown'\n    } else if (window.MSPointerEvent) {\n      event = 'MSPointerDown'\n    }\n\n    return event\n  }\n\n  /**\n   * Callback for mouse input events\n   *\n   * @param  { Object } e - the event object\n   * @return { Void }\n   **/\n  onMouseInput(e) {\n    this.recordFirstInput('mouse', this.__trackomatic__.util.keyCode(e))\n  }\n\n  /**\n   * Callback for touch input events\n   *\n   * @param  { Object } e - the event object\n   * @return { Void }\n   **/\n  onTouchInput(e) {\n    this.recordFirstInput('touch', this.__trackomatic__.util.keyCode(e))\n  }\n\n  /**\n   * Callback for keyboard input events\n   *\n   * @param  { Object } e - the event object\n   * @return { Void }\n   **/\n  onKeyboardInput(e) {\n    e = e || window.event\n    let code      = this.__trackomatic__.util.keyCode(e)\n    let blacklist = this.__trackomatic__.config.EXCLUDED_KEYS\n\n    /**\n     * Intent is to filter out keys such as SPACE, UP, DOWN, etc.\n     * that a keyboard user might initially use in place of scrolling\n     */\n    let shouldRecordKey = true\n\n    if (e.metaKey || e.ctrlKey || e.altKey) {\n      shouldRecordKey = false\n    }\n\n    for (let key in blacklist) {\n      if (code === blacklist[key]) {\n        shouldRecordKey = false\n      }\n    }\n\n    if (shouldRecordKey) {\n      // track the first keycode\n      this.track({\n        category : 'First Input',\n        action   : 'First Keycode',\n        label    : code\n      })\n\n      // also attempt to track this as the first input\n      this.recordFirstInput('keyboard', code)\n    }\n  }\n\n  /**\n   * Tracks the first input used. Does nothing after the first call.\n   *\n   * @param { String } inputType - The type of interaction ('click', 'touchstart', etc.)\n   * @param { String } keyCode   - The code describing which key was pressed\n   */\n  recordFirstInput(inputType, keyCode) {\n    if (!this.firstInputRecorded) {\n      this.track({\n        category : 'First Input',\n        action   : inputType,\n        label    : keyCode\n      })\n\n      this.firstInputRecorded = true\n    }\n  }\n}\n\nexport default FirstInputPlugin\n"
   },
   {
     "kind": "variable",
@@ -519,16 +519,10 @@
     "importPath": "trackomatic/src/plugins/firstInputPlugin.js",
     "importStyle": "FirstInputPlugin",
     "description": "Tracks what the first interaction mode is (mouse, touch, keyboard)",
-    "lineNumber": 10,
-    "unknown": [
-      {
-        "tagName": "@class",
-        "tagValue": "FirstInputPlugin"
-      }
-    ],
+    "lineNumber": 9,
     "interface": false,
     "extends": [
-      "*"
+      " Plugin "
     ]
   },
   {
@@ -540,17 +534,7 @@
     "longname": "src/plugins/firstInputPlugin.js~FirstInputPlugin#install",
     "access": null,
     "description": "The setup function for this plugin",
-    "lineNumber": 18,
-    "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "install"
-      },
-      {
-        "tagName": "@returns",
-        "tagValue": "{ Void }"
-      }
-    ],
+    "lineNumber": 16,
     "params": [],
     "return": {
       "nullable": null,
@@ -571,7 +555,7 @@
     "longname": "src/plugins/firstInputPlugin.js~FirstInputPlugin#firstInputRecorded",
     "access": null,
     "description": null,
-    "lineNumber": 19,
+    "lineNumber": 17,
     "undocument": true,
     "type": {
       "types": [
@@ -588,17 +572,7 @@
     "longname": "src/plugins/firstInputPlugin.js~FirstInputPlugin#getMouseEvent",
     "access": null,
     "description": "Returns the proper name of the mouse event for this environment",
-    "lineNumber": 32,
-    "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "getMouseEvent"
-      },
-      {
-        "tagName": "@returns",
-        "tagValue": "{ String } - the name of the mouse event for this browser"
-      }
-    ],
+    "lineNumber": 29,
     "params": [],
     "return": {
       "nullable": null,
@@ -619,17 +593,7 @@
     "longname": "src/plugins/firstInputPlugin.js~FirstInputPlugin#onMouseInput",
     "access": null,
     "description": "Callback for mouse input events",
-    "lineNumber": 51,
-    "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "onMouseInput"
-      },
-      {
-        "tagName": "@returns",
-        "tagValue": "{ Void }"
-      }
-    ],
+    "lineNumber": 47,
     "params": [
       {
         "nullable": null,
@@ -661,17 +625,7 @@
     "longname": "src/plugins/firstInputPlugin.js~FirstInputPlugin#onTouchInput",
     "access": null,
     "description": "Callback for touch input events",
-    "lineNumber": 62,
-    "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "onTouchInput"
-      },
-      {
-        "tagName": "@returns",
-        "tagValue": "{ Void }"
-      }
-    ],
+    "lineNumber": 57,
     "params": [
       {
         "nullable": null,
@@ -703,17 +657,7 @@
     "longname": "src/plugins/firstInputPlugin.js~FirstInputPlugin#onKeyboardInput",
     "access": null,
     "description": "Callback for keyboard input events",
-    "lineNumber": 73,
-    "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "onKeyboardInput"
-      },
-      {
-        "tagName": "@returns",
-        "tagValue": "{ Void }"
-      }
-    ],
+    "lineNumber": 67,
     "params": [
       {
         "nullable": null,
@@ -745,7 +689,7 @@
     "longname": "src/plugins/firstInputPlugin.js~FirstInputPlugin#recordFirstInput",
     "access": null,
     "description": "Tracks the first input used. Does nothing after the first call.",
-    "lineNumber": 113,
+    "lineNumber": 107,
     "params": [
       {
         "nullable": null,
@@ -779,7 +723,7 @@
     "longname": "src/plugins/firstInputPlugin.js~FirstInputPlugin#firstInputRecorded",
     "access": null,
     "description": null,
-    "lineNumber": 121,
+    "lineNumber": 115,
     "undocument": true,
     "type": {
       "types": [
@@ -799,7 +743,7 @@
     "importPath": "trackomatic/src/plugins/firstInputPlugin.js",
     "importStyle": "firstInputPlugin",
     "description": null,
-    "lineNumber": 126,
+    "lineNumber": 120,
     "undocument": true,
     "type": {
       "types": [
@@ -829,7 +773,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "const BasePlugin = require('../plugin')\n\n/**\n * Tracks link clicks\n *\n * @class LinkTrackingPlugin\n * @extends plugin as BasePlugin\n */\nclass LinkTrackingPlugin extends BasePlugin {\n\n  /**\n   * The setup function for this plugin\n   *\n   * @function install\n   * @returns { Void }\n   */\n  install() {\n    document.documentElement.addEventListener('click', this.onLinkClick.bind(this), false)\n  }\n\n  /**\n   * Callback for link click events\n   *\n   * @function onLinkClick\n   * @param   { Object } e - the event object\n   * @returns { Void }\n   **/\n  onLinkClick(e) {\n    let link = this.__trackomatic__.util.getLink(e.target || e.srcElement)\n\n    if (link) {\n      let data = this.getVisitData(e, link)\n\n      if (data) {\n        this.interceptVisit(e, link, data)\n      }\n    }\n  }\n\n  /**\n   * Extracts tracking parameters from a clicked link\n   *\n   * @function getVisitData\n   * @param   { Object } e    - the event object\n   * @param   { Node }   link - the node that was clicked\n   * @returns { Object }      - the extracted category, action, and label for this link\n   **/\n  getVisitData(e, link) {\n    let { util, config, options } = this.__trackomatic__\n\n    let url        = link.href\n    let keyCode    = util.keyCode(e)\n    let rightClick = keyCode === config.KEYS.RIGHT_CLICK\n    let metaKey    = e.ctrlKey || e.metaKey || e.altKey\n\n    // unless right click or a modifier key is pressed, return the visit data\n    if (!rightClick && !metaKey) {\n      let extractedAttributes = this.extractAutoTrackingAttributes(url)\n\n      if (extractedAttributes) {\n        let map = { ...extractedAttributes, label: url }\n        let trackomaticAttributes = link.getAttribute('data-trackomatic')\n\n        if (trackomaticAttributes) {\n          let [category, action, label] = trackomaticAttributes.split(options.delimiter)\n\n          map.category = category || map.category\n          map.action   = action   || map.action\n          map.label    = label    || map.label\n        }\n\n        return map\n      }\n    }\n  }\n\n  /**\n   * Extracts a tracking category and action based on the url of a clicked link\n   *\n   * @function extractAutoTrackingAttributes\n   * @param   { String }        url - The href of the clicked link\n   * @returns { Void | Object }     - Extracted parameters based on matching of url\n   **/\n  extractAutoTrackingAttributes(url) {\n    let { util, config, options } = this.__trackomatic__\n    let differentHost = util.getHost(url) !== util.getHost(window.location.href)\n\n    if (url.match(options.files)) {\n      return { category: 'File Click', action: 'click' }\n    } else if (url.match(config.REGEX.MAILTO_HREF)) {\n      return { category: 'Mailto Click', action: 'click' }\n    } else if (url.match(config.REGEX.TEL_HREF)) {\n      return { category: 'Telephone Click', action: 'click' }\n    } else if (differentHost) {\n      if (url.match(options.networks)) {\n        return { category: 'Social Media Click', action: 'click' }\n      } else {\n        return { category: 'Site Exit', action: util.getHost(url) }\n      }\n    }\n  }\n\n  /**\n   * Reports tracking data for the clicked link and then redirects to the link url.\n   *\n   * @function interceptVisit\n   * @param   { Object } e      - The event object\n   * @param   { Node }   link   - The clicked link\n   * @param   { Object } params - Category, action, and label\n   * @returns { Void }\n   **/\n  interceptVisit(e, link, { category, action, label }) {\n    let { config, options } = this.__trackomatic__\n\n    let delay    = Math.min(options.redirectDelay, config.MAX_REDIRECT_DELAY)\n    let redirect = this.createRedirect(link)\n\n    // track visit\n    this.track({ category, action, label, hitCallback : redirect })\n\n    // in case the GA hitCallback doesn't fire, redirect\n    // to the clicked link after the configured delay\n    setTimeout(redirect, delay)\n\n    // prevent the default link click behavior (redirect)\n    e.preventDefault()\n  }\n\n  /**\n   * Creates a function that will redirect to the given url or if dev/debug mode\n   * is on this function will return a noop. The redirect function is protected\n   * by callOnce which prevents it from being called multiple times.\n   *\n   * @function createRedirect\n   * @param   { Node }            link - The clicked link\n   * @returns { Void | Function }      - Protected redirect function\n   **/\n  createRedirect(link) {\n    let { util, options } = this.__trackomatic__\n\n    if (__DEV__ && options.debug) {\n      return util.noop\n    }\n\n    // ensure that this redirect callback can be called no more than once\n    return util.callOnce(util.createNavigationHandler(link))\n  }\n\n}\n\nexport default LinkTrackingPlugin\n"
+    "content": "const BasePlugin = require('../plugin')\n\n/**\n * Tracks link clicks\n *\n * @extends { Plugin }\n */\nclass LinkTrackingPlugin extends BasePlugin {\n\n  /**\n   * The setup function for this plugin\n   *\n   * @returns { Void }\n   */\n  install() {\n    document.documentElement.addEventListener('click', this.onLinkClick.bind(this), false)\n  }\n\n  /**\n   * Callback for link click events\n   *\n   * @param   { Object } e - the event object\n   * @returns { Void }\n   **/\n  onLinkClick(e) {\n    let link = this.__trackomatic__.util.getLink(e.target || e.srcElement)\n\n    if (link) {\n      let data = this.getVisitData(e, link)\n\n      if (data) {\n        this.interceptVisit(e, link, data)\n      }\n    }\n  }\n\n  /**\n   * Extracts tracking parameters from a clicked link\n   *\n   * @param   { Object } e    - the event object\n   * @param   { Node }   link - the node that was clicked\n   * @returns { Object }      - the extracted category, action, and label for this link\n   **/\n  getVisitData(e, link) {\n    let { util, config, options } = this.__trackomatic__\n\n    let url        = link.href\n    let keyCode    = util.keyCode(e)\n    let rightClick = keyCode === config.KEYS.RIGHT_CLICK\n    let metaKey    = e.ctrlKey || e.metaKey || e.altKey\n\n    // unless right click or a modifier key is pressed, return the visit data\n    if (!rightClick && !metaKey) {\n      let extractedAttributes = this.extractAutoTrackingAttributes(url)\n\n      if (extractedAttributes) {\n        let map = { ...extractedAttributes, label: url }\n        let trackomaticAttributes = link.getAttribute('data-trackomatic')\n\n        if (trackomaticAttributes) {\n          let [category, action, label] = trackomaticAttributes.split(options.delimiter)\n\n          map.category = category || map.category\n          map.action   = action   || map.action\n          map.label    = label    || map.label\n        }\n\n        return map\n      }\n    }\n  }\n\n  /**\n   * Extracts a tracking category and action based on the url of a clicked link\n   *\n   * @param   { String }        url - The href of the clicked link\n   * @returns { Void | Object }     - Extracted parameters based on matching of url\n   **/\n  extractAutoTrackingAttributes(url) {\n    let { util, config, options } = this.__trackomatic__\n    let differentHost = util.getHost(url) !== util.getHost(window.location.href)\n\n    if (url.match(options.files)) {\n      return { category: 'File Click', action: 'click' }\n    } else if (url.match(config.REGEX.MAILTO_HREF)) {\n      return { category: 'Mailto Click', action: 'click' }\n    } else if (url.match(config.REGEX.TEL_HREF)) {\n      return { category: 'Telephone Click', action: 'click' }\n    } else if (differentHost) {\n      if (url.match(options.networks)) {\n        return { category: 'Social Media Click', action: 'click' }\n      } else {\n        return { category: 'Site Exit', action: util.getHost(url) }\n      }\n    }\n  }\n\n  /**\n   * Reports tracking data for the clicked link and then redirects to the link url.\n   *\n   * @param   { Object } e      - The event object\n   * @param   { Node }   link   - The clicked link\n   * @param   { Object } params - Category, action, and label\n   * @returns { Void }\n   **/\n  interceptVisit(e, link, { category, action, label }) {\n    let { config, options } = this.__trackomatic__\n\n    let delay    = Math.min(options.redirectDelay, config.MAX_REDIRECT_DELAY)\n    let redirect = this.createRedirect(link)\n\n    // track visit\n    this.track({ category, action, label, hitCallback : redirect })\n\n    // in case the GA hitCallback doesn't fire, redirect\n    // to the clicked link after the configured delay\n    setTimeout(redirect, delay)\n\n    // prevent the default link click behavior (redirect)\n    e.preventDefault()\n  }\n\n  /**\n   * Creates a function that will redirect to the given url or if dev/debug mode\n   * is on this function will return a noop. The redirect function is protected\n   * by callOnce which prevents it from being called multiple times.\n   *\n   * @param   { Node }            link - The clicked link\n   * @returns { Void | Function }      - Protected redirect function\n   **/\n  createRedirect(link) {\n    let { util, options } = this.__trackomatic__\n\n    if (__DEV__ && options.debug) {\n      return util.noop\n    }\n\n    // ensure that this redirect callback can be called no more than once\n    return util.callOnce(util.createNavigationHandler(link))\n  }\n\n}\n\nexport default LinkTrackingPlugin\n"
   },
   {
     "kind": "variable",
@@ -863,16 +807,10 @@
     "importPath": "trackomatic/src/plugins/linkTrackingPlugin.js",
     "importStyle": "LinkTrackingPlugin",
     "description": "Tracks link clicks",
-    "lineNumber": 9,
-    "unknown": [
-      {
-        "tagName": "@class",
-        "tagValue": "LinkTrackingPlugin"
-      }
-    ],
+    "lineNumber": 8,
     "interface": false,
     "extends": [
-      "*"
+      " Plugin "
     ]
   },
   {
@@ -884,12 +822,8 @@
     "longname": "src/plugins/linkTrackingPlugin.js~LinkTrackingPlugin#install",
     "access": null,
     "description": "The setup function for this plugin",
-    "lineNumber": 17,
+    "lineNumber": 15,
     "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "install"
-      },
       {
         "tagName": "@returns",
         "tagValue": "{ Void }"
@@ -915,12 +849,8 @@
     "longname": "src/plugins/linkTrackingPlugin.js~LinkTrackingPlugin#onLinkClick",
     "access": null,
     "description": "Callback for link click events",
-    "lineNumber": 28,
+    "lineNumber": 25,
     "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "onLinkClick"
-      },
       {
         "tagName": "@returns",
         "tagValue": "{ Void }"
@@ -957,12 +887,8 @@
     "longname": "src/plugins/linkTrackingPlugin.js~LinkTrackingPlugin#getVisitData",
     "access": null,
     "description": "Extracts tracking parameters from a clicked link",
-    "lineNumber": 48,
+    "lineNumber": 44,
     "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "getVisitData"
-      },
       {
         "tagName": "@returns",
         "tagValue": "{ Object }      - the extracted category, action, and label for this link"
@@ -1009,12 +935,8 @@
     "longname": "src/plugins/linkTrackingPlugin.js~LinkTrackingPlugin#extractAutoTrackingAttributes",
     "access": null,
     "description": "Extracts a tracking category and action based on the url of a clicked link",
-    "lineNumber": 84,
+    "lineNumber": 79,
     "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "extractAutoTrackingAttributes"
-      },
       {
         "tagName": "@returns",
         "tagValue": "{ Void | Object }     - Extracted parameters based on matching of url"
@@ -1052,12 +974,8 @@
     "longname": "src/plugins/linkTrackingPlugin.js~LinkTrackingPlugin#interceptVisit",
     "access": null,
     "description": "Reports tracking data for the clicked link and then redirects to the link url.",
-    "lineNumber": 112,
+    "lineNumber": 106,
     "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "interceptVisit"
-      },
       {
         "tagName": "@returns",
         "tagValue": "{ Void }"
@@ -1114,12 +1032,8 @@
     "longname": "src/plugins/linkTrackingPlugin.js~LinkTrackingPlugin#createRedirect",
     "access": null,
     "description": "Creates a function that will redirect to the given url or if dev/debug mode\nis on this function will return a noop. The redirect function is protected\nby callOnce which prevents it from being called multiple times.",
-    "lineNumber": 138,
+    "lineNumber": 131,
     "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "createRedirect"
-      },
       {
         "tagName": "@returns",
         "tagValue": "{ Void | Function }      - Protected redirect function"
@@ -1160,7 +1074,7 @@
     "importPath": "trackomatic/src/plugins/linkTrackingPlugin.js",
     "importStyle": "linkTrackingPlugin",
     "description": null,
-    "lineNumber": 151,
+    "lineNumber": 144,
     "undocument": true,
     "type": {
       "types": [
@@ -1178,7 +1092,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "const BasePlugin = require('../plugin')\n\n/**\n * Viewport tracking and peporting plugin\n *\n * @class ViewportTrackingPlugin\n * @extends plugin as BasePlugin\n */\nclass ViewportTrackingPlugin extends BasePlugin {\n\n  /**\n   * The setup function for this plugin\n   *\n   * @function install\n   * @returns { Void }\n   */\n  install() {\n    let { util } = this.__trackomatic__\n\n    this.viewportSize  = util.getViewportSize()\n    this.viewportRatio = util.getViewportRatio(this.viewportSize)\n    this.simpleWidth   = util.roundXtoY(this.viewportSize.width, 100)\n    this.simpleHeight  = util.roundXtoY(this.viewportSize.height, 100)\n\n    // track width\n    this.track({\n      category : 'Viewport',\n      action   : 'Initial Width',\n      label    : String(this.simpleWidth)\n    })\n\n    // track height\n    this.track({\n      category : 'Viewport',\n      action   : 'Initial Height',\n      label    : String(this.simpleHeight)\n    })\n\n    // track ratio\n    this.track({\n      category : 'Viewport',\n      action   : 'Initial Ratio',\n      label    : String(this.viewportRatio)\n    })\n\n    // Set up event listeners for viewport tracking\n    this.listen()\n  }\n\n  /**\n   * For browsers that aren't iDevices or Android phones,\n   * listen to resize events and update dimensions in response.\n   *\n   * For all browsers listen to orientationchange events\n   * and update dimensions in response\n   *\n   * @function listen\n   * @returns { Void }\n   */\n  listen() {\n    window.addEventListener(\n      'orientationchange',\n      this.__trackomatic__.util.debounce(this.trackViewportChanges.bind(this), 1000),\n      false\n    )\n\n    // if NOT a mobile platform\n    if (!this.__trackomatic__.config.MOBILE_PLATFORM) {\n      window.addEventListener(\n        'resize',\n        this.__trackomatic__.util.debounce(this.trackViewportChanges.bind(this), 1000),\n        false\n      )\n    }\n  }\n\n  /**\n   * Updates viewportSize and reports relative changes to GA\n   * in response to window resize or orientation changes\n   *\n   * @function trackViewportChanges\n   * @returns { Void }\n   */\n  trackViewportChanges() {\n    let size    = this.__trackomatic__.util.getViewportSize()\n    let changes = this.calculateViewportChanges(size, this.viewportSize)\n\n    // Track height changes\n    if (changes.height) {\n      this.track({\n        category : 'Viewport',\n        action   : 'Resize Height',\n        label    : changes.height\n      })\n    }\n\n    // Track width changes\n    if (changes.width) {\n      this.track({\n        category : 'Viewport',\n        action   : 'Resize Width',\n        label    : changes.width\n      })\n    }\n\n    this.viewportSize = size\n  }\n\n  /**\n   * Updates viewportSize and reports relative changes to GA\n   * in response to window resize or orientation changes\n   *\n   * @function calculateViewportChanges\n   * @param { Object }   p - The \"previous\" viewport size\n   * @param { Obejct }   n - The \"next\" viewport size\n   * @returns { Object }   - Relative width and height changes\n   */\n  calculateViewportChanges(p, n) {\n    return {\n      height : p.height > n.height ? 'taller' : p.height < n.height ? 'shorter'  : null,\n      width  : p.width  > n.width  ? 'wider'  : p.width  < n.width  ? 'narrower' : null\n    }\n  }\n\n}\n\nexport default ViewportTrackingPlugin\n"
+    "content": "const BasePlugin = require('../plugin')\n\n/**\n * Viewport tracking and reporting plugin\n *\n * @extends { Plugin }\n */\nclass ViewportTrackingPlugin extends BasePlugin {\n\n  /**\n   * The setup function for this plugin\n   *\n   * @return { Void }\n   */\n  install() {\n    let { util } = this.__trackomatic__\n\n    this.viewportSize  = util.getViewportSize()\n    this.viewportRatio = util.getViewportRatio(this.viewportSize)\n    this.simpleWidth   = util.roundXtoY(this.viewportSize.width, 100)\n    this.simpleHeight  = util.roundXtoY(this.viewportSize.height, 100)\n\n    // track width\n    this.track({\n      category : 'Viewport',\n      action   : 'Initial Width',\n      label    : String(this.simpleWidth)\n    })\n\n    // track height\n    this.track({\n      category : 'Viewport',\n      action   : 'Initial Height',\n      label    : String(this.simpleHeight)\n    })\n\n    // track ratio\n    this.track({\n      category : 'Viewport',\n      action   : 'Initial Ratio',\n      label    : String(this.viewportRatio)\n    })\n\n    // Set up event listeners for viewport tracking\n    this.listen()\n  }\n\n  /**\n   * For browsers that aren't iDevices or Android phones,\n   * listen to resize events and update dimensions in response.\n   *\n   * For all browsers listen to orientationchange events\n   * and update dimensions in response\n   *\n   * @return { Void }\n   */\n  listen() {\n    window.addEventListener(\n      'orientationchange',\n      this.__trackomatic__.util.debounce(this.trackViewportChanges.bind(this), 1000),\n      false\n    )\n\n    // if NOT a mobile platform\n    if (!this.__trackomatic__.config.MOBILE_PLATFORM) {\n      window.addEventListener(\n        'resize',\n        this.__trackomatic__.util.debounce(this.trackViewportChanges.bind(this), 1000),\n        false\n      )\n    }\n  }\n\n  /**\n   * Updates viewportSize and reports relative changes to GA\n   * in response to window resize or orientation changes\n   *\n   * @return { Void }\n   */\n  trackViewportChanges() {\n    let size    = this.__trackomatic__.util.getViewportSize()\n    let changes = this.calculateViewportChanges(size, this.viewportSize)\n\n    // Track height changes\n    if (changes.height) {\n      this.track({\n        category : 'Viewport',\n        action   : 'Resize Height',\n        label    : changes.height\n      })\n    }\n\n    // Track width changes\n    if (changes.width) {\n      this.track({\n        category : 'Viewport',\n        action   : 'Resize Width',\n        label    : changes.width\n      })\n    }\n\n    this.viewportSize = size\n  }\n\n  /**\n   * Updates viewportSize and reports relative changes to GA\n   * in response to window resize or orientation changes\n   *\n   * @param { Object }   p - The \"previous\" viewport size\n   * @param { Obejct }   n - The \"next\" viewport size\n   * @return { Object }   - Relative width and height changes\n   */\n  calculateViewportChanges(p, n) {\n    return {\n      height : p.height > n.height ? 'taller' : p.height < n.height ? 'shorter'  : null,\n      width  : p.width  > n.width  ? 'wider'  : p.width  < n.width  ? 'narrower' : null\n    }\n  }\n\n}\n\nexport default ViewportTrackingPlugin\n"
   },
   {
     "kind": "variable",
@@ -1211,17 +1125,11 @@
     "export": true,
     "importPath": "trackomatic/src/plugins/viewportTrackingPlugin.js",
     "importStyle": "ViewportTrackingPlugin",
-    "description": "Viewport tracking and peporting plugin",
-    "lineNumber": 9,
-    "unknown": [
-      {
-        "tagName": "@class",
-        "tagValue": "ViewportTrackingPlugin"
-      }
-    ],
+    "description": "Viewport tracking and reporting plugin",
+    "lineNumber": 8,
     "interface": false,
     "extends": [
-      "*"
+      " Plugin "
     ]
   },
   {
@@ -1233,17 +1141,7 @@
     "longname": "src/plugins/viewportTrackingPlugin.js~ViewportTrackingPlugin#install",
     "access": null,
     "description": "The setup function for this plugin",
-    "lineNumber": 17,
-    "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "install"
-      },
-      {
-        "tagName": "@returns",
-        "tagValue": "{ Void }"
-      }
-    ],
+    "lineNumber": 15,
     "params": [],
     "return": {
       "nullable": null,
@@ -1264,7 +1162,7 @@
     "longname": "src/plugins/viewportTrackingPlugin.js~ViewportTrackingPlugin#viewportSize",
     "access": null,
     "description": null,
-    "lineNumber": 20,
+    "lineNumber": 18,
     "undocument": true,
     "type": {
       "types": [
@@ -1281,7 +1179,7 @@
     "longname": "src/plugins/viewportTrackingPlugin.js~ViewportTrackingPlugin#viewportRatio",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 19,
     "undocument": true,
     "type": {
       "types": [
@@ -1298,7 +1196,7 @@
     "longname": "src/plugins/viewportTrackingPlugin.js~ViewportTrackingPlugin#simpleWidth",
     "access": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 20,
     "undocument": true,
     "type": {
       "types": [
@@ -1315,7 +1213,7 @@
     "longname": "src/plugins/viewportTrackingPlugin.js~ViewportTrackingPlugin#simpleHeight",
     "access": null,
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 21,
     "undocument": true,
     "type": {
       "types": [
@@ -1332,17 +1230,7 @@
     "longname": "src/plugins/viewportTrackingPlugin.js~ViewportTrackingPlugin#listen",
     "access": null,
     "description": "For browsers that aren't iDevices or Android phones,\nlisten to resize events and update dimensions in response.\n\nFor all browsers listen to orientationchange events\nand update dimensions in response",
-    "lineNumber": 60,
-    "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "listen"
-      },
-      {
-        "tagName": "@returns",
-        "tagValue": "{ Void }"
-      }
-    ],
+    "lineNumber": 57,
     "params": [],
     "return": {
       "nullable": null,
@@ -1363,17 +1251,7 @@
     "longname": "src/plugins/viewportTrackingPlugin.js~ViewportTrackingPlugin#trackViewportChanges",
     "access": null,
     "description": "Updates viewportSize and reports relative changes to GA\nin response to window resize or orientation changes",
-    "lineNumber": 84,
-    "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "trackViewportChanges"
-      },
-      {
-        "tagName": "@returns",
-        "tagValue": "{ Void }"
-      }
-    ],
+    "lineNumber": 80,
     "params": [],
     "return": {
       "nullable": null,
@@ -1394,7 +1272,7 @@
     "longname": "src/plugins/viewportTrackingPlugin.js~ViewportTrackingPlugin#viewportSize",
     "access": null,
     "description": null,
-    "lineNumber": 106,
+    "lineNumber": 102,
     "undocument": true,
     "type": {
       "types": [
@@ -1411,17 +1289,7 @@
     "longname": "src/plugins/viewportTrackingPlugin.js~ViewportTrackingPlugin#calculateViewportChanges",
     "access": null,
     "description": "Updates viewportSize and reports relative changes to GA\nin response to window resize or orientation changes",
-    "lineNumber": 118,
-    "unknown": [
-      {
-        "tagName": "@function",
-        "tagValue": "calculateViewportChanges"
-      },
-      {
-        "tagName": "@returns",
-        "tagValue": "{ Object }   - Relative width and height changes"
-      }
-    ],
+    "lineNumber": 113,
     "params": [
       {
         "nullable": null,
@@ -1466,7 +1334,7 @@
     "importPath": "trackomatic/src/plugins/viewportTrackingPlugin.js",
     "importStyle": "viewportTrackingPlugin",
     "description": null,
-    "lineNumber": 127,
+    "lineNumber": 122,
     "undocument": true,
     "type": {
       "types": [
@@ -1995,7 +1863,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "var config = require('./config')\n\n/**\n * Utility functions\n **/\nconst util = {\n  noop() {},\n\n  keyCode(e) {\n    e = e || window.event\n    return e.which || e.keyCode\n  },\n\n  /**\n   * Allows easy extraction of domain, pathname, etc off of a full URL.\n   * @param {string} href - the url to parse\n   */\n  createAnchor(href) {\n    var target = document.createElement('a')\n    target.href = href\n    return target\n  },\n\n  /**\n   * A small wrapper for `createAnchor` that returns just the `pathname`\n   * @param {string} href - the url to parse\n   */\n  getPathname(href) {\n    // normalize the pathname, since IE omits the leading slash.\n    return href && this.createAnchor(href).pathname.replace(config.REGEX.LEADING_SLASH, '/')\n  },\n\n  /**\n   * Capitalizes the first letter of a string. Useful for combining inconsistent data sources.\n   * @param {string} string - the string to capitalize\n   */\n  capitalize(string) {\n    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()\n  },\n\n  /**\n   * Turns strings into slugs - useful for combining inconsistent data sources\n   *\n   * @function slugify\n   * @param   { String } text - the string to slugify\n   * @returns { String }      - the slugified string\n   */\n  slugify(text) {\n    return text.toString()\n      .toLowerCase()\n      .replace(config.REGEX.SPACES, '-')           // Replace spaces with -\n      .replace(config.REGEX.NON_WORD, '')          // Remove all non-word chars\n      .replace(config.REGEX.MULTIPLE_HYPHENS, '-') // Replace multiple - with single -\n      .replace(config.REGEX.LEADING_HYPHENS, '')   // Trim - from start of text\n      .replace(config.REGEX.TRAILING_HYPHENS, '') // Trim - from end of text\n  },\n\n  /**\n   * Reads cookies.\n   */\n  readCookie() {\n    return (config.REGEX.COOKIE.exec(document.cookie) || []).pop()\n  },\n\n  /**\n   * Writes cookies. This function is a no-op if `_trackomatic.options.nocookie` is `true`.\n   * @param {string} name - the name for the cookie value\n   * @param {mixed} value - the value to be stored as a cookie\n   * @param {number} days - the number of days to store the cookie for\n   */\n  createCookie(name, value, days) {\n    if(_trackomatic.options.nocookie) return\n\n    var expires = days ? ' expires=' + (new Date(days * 864E5 + (new Date()).getTime())).toGMTString() : ''\n    document.cookie = `${ name }=${ value }${ expires }; path=/; domain=${ document.location.hostname }`\n  },\n\n  /**\n   * Debounces function calls.\n   */\n  debounce(func, wait, immediate) {\n    var timeout\n\n    return function() {\n      var context = this\n      var args = arguments\n\n      var later = function() {\n        timeout = null\n        if (!immediate) func.apply(context, args)\n      }\n\n      var callNow = immediate && !timeout\n\n      clearTimeout(timeout)\n      timeout = setTimeout(later, wait)\n\n      if (callNow) func.apply(context, args)\n    }\n  },\n\n  /**\n   * Gets the viewport size.\n   */\n  getViewportSize() {\n    if (typeof window.innerWidth !== 'undefined') {\n      return {\n        width  : window.innerWidth,\n        height : window.innerHeight\n      }\n    } else if (typeof document.documentElement !== 'undefined'\n        && typeof document.documentElement.clientWidth !== 'undefined'\n        && document.documentElement.clientWidth !== 0) {\n      return {\n        width  : document.documentElement.clientWidth,\n        height : document.documentElement.clientHeight\n      }\n    } else {\n      return {\n        width  : document.body.clientWidth,\n        height : document.body.clientHeight\n      }\n    }\n  },\n\n  getViewportRatio(size) {\n    return (size.width / size.height).toPrecision(2)\n  },\n\n  /**\n   * Rounds numbers.\n   */\n  roundXtoY(x, y) {\n    var upper = Math.ceil(x/y) * y\n    var lower = Math.floor(x/y) * y\n\n    return (x - lower < upper - x) ? lower : upper\n  },\n\n  createNavigationHandler(link) {\n    return function() {\n      if (link.target) {\n        window.open(link.href, link.target)\n      } else {\n        window.location = link.href\n      }\n    }\n  },\n\n  getHost(url) {\n    return url.replace(config.REGEX.HTTP_PROTOCOL, '').split('/')[0]\n  },\n\n  getLink(node) {\n    if (node === document.documentElement) {\n      return false\n    } else if (node.tagName.toLowerCase() === 'a') {\n      return node\n    } else {\n      return this.getLink(node.parentNode)\n    }\n  },\n\n  getURLParams() {\n    let map = {}\n    location.href.replace(config.REGEX.QUERY_PARAMS, (m, k, v) => map[k] = v)\n    return map\n  },\n\n  isArray(item) {\n    return Object.prototype.toString.call(item) === '[object Array]'\n  },\n\n  regexify(input) {\n    input = this.isArray(input) ? input : [input]\n    return new RegExp(input.map(s => s.replace(/\\./g, '\\\\.')).join('|'), 'i')\n  },\n\n  /**\n   * Wraps a function and guards it from being invoked more than once\n   *\n   * @function callOnce\n   * @param   { Function } fn - the function to guard\n   * @returns { Function }    - the wrapped function\n   */\n  callOnce(fn) {\n    let called = false\n\n    return function callOnceWrappedFunction() {\n      if (called) return\n      fn()\n      called = true\n    }\n  }\n}\n\nexport default util\n"
+    "content": "var config = require('./config')\n\n/**\n * Utility functions\n **/\nconst util = {\n  noop() {},\n\n  keyCode(e) {\n    e = e || window.event\n    return e.which || e.keyCode\n  },\n\n  /**\n   * Allows easy extraction of domain, pathname, etc off of a full URL.\n   * @param { String } href - the url to parse\n   */\n  createAnchor(href) {\n    var target = document.createElement('a')\n    target.href = href\n    return target\n  },\n\n  /**\n   * A small wrapper for `createAnchor` that returns just the `pathname`\n   * @param { String } href - the url to parse\n   */\n  getPathname(href) {\n    // normalize the pathname, since IE omits the leading slash.\n    return href && this.createAnchor(href).pathname.replace(config.REGEX.LEADING_SLASH, '/')\n  },\n\n  /**\n   * Capitalizes the first letter of a string. Useful for combining inconsistent data sources.\n   * @param { String } string - the string to capitalize\n   */\n  capitalize(string) {\n    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()\n  },\n\n  /**\n   * Turns strings into slugs - useful for combining inconsistent data sources\n   *\n   * @param  { String } text - the string to slugify\n   * @return { String }      - the slugified string\n   */\n  slugify(text) {\n    return text.toString()\n      .toLowerCase()\n      .replace(config.REGEX.SPACES, '-')           // Replace spaces with -\n      .replace(config.REGEX.NON_WORD, '')          // Remove all non-word chars\n      .replace(config.REGEX.MULTIPLE_HYPHENS, '-') // Replace multiple - with single -\n      .replace(config.REGEX.LEADING_HYPHENS, '')   // Trim - from start of text\n      .replace(config.REGEX.TRAILING_HYPHENS, '')  // Trim - from end of text\n  },\n\n  /**\n   * Reads cookies.\n   */\n  readCookie() {\n    return (config.REGEX.COOKIE.exec(document.cookie) || []).pop()\n  },\n\n  /**\n   * Writes cookies. This function is a no-op if `_trackomatic.options.nocookie` is `true`.\n   * @param  { String } name  - the name for the cookie value\n   * @param  { Mixed }  value - the value to be stored as a cookie\n   * @param  { Number } days  - the number of days to store the cookie for\n   * @return { Void }\n   */\n  createCookie(name, value, days) {\n    if(_trackomatic.options.nocookie) return\n\n    var expires = days ? ' expires=' + (new Date(days * 864E5 + (new Date()).getTime())).toGMTString() : ''\n    document.cookie = `${ name }=${ value }${ expires }; path=/; domain=${ document.location.hostname }`\n  },\n\n  /**\n   * Debounces function calls.\n   */\n  debounce(func, wait, immediate) {\n    var timeout\n\n    return function() {\n      var context = this\n      var args = arguments\n\n      var later = function() {\n        timeout = null\n        if (!immediate) func.apply(context, args)\n      }\n\n      var callNow = immediate && !timeout\n\n      clearTimeout(timeout)\n      timeout = setTimeout(later, wait)\n\n      if (callNow) func.apply(context, args)\n    }\n  },\n\n  /**\n   * Gets the viewport size.\n   */\n  getViewportSize() {\n    if (typeof window.innerWidth !== 'undefined') {\n      return {\n        width  : window.innerWidth,\n        height : window.innerHeight\n      }\n    } else if (typeof document.documentElement !== 'undefined'\n        && typeof document.documentElement.clientWidth !== 'undefined'\n        && document.documentElement.clientWidth !== 0) {\n      return {\n        width  : document.documentElement.clientWidth,\n        height : document.documentElement.clientHeight\n      }\n    } else {\n      return {\n        width  : document.body.clientWidth,\n        height : document.body.clientHeight\n      }\n    }\n  },\n\n  getViewportRatio(size) {\n    return (size.width / size.height).toPrecision(2)\n  },\n\n  /**\n   * Rounds numbers.\n   */\n  roundXtoY(x, y) {\n    var upper = Math.ceil(x/y) * y\n    var lower = Math.floor(x/y) * y\n\n    return (x - lower < upper - x) ? lower : upper\n  },\n\n  createNavigationHandler(link) {\n    return function() {\n      if (link.target) {\n        window.open(link.href, link.target)\n      } else {\n        window.location = link.href\n      }\n    }\n  },\n\n  getHost(url) {\n    return url.replace(config.REGEX.HTTP_PROTOCOL, '').split('/')[0]\n  },\n\n  getLink(node) {\n    if (node === document.documentElement) {\n      return false\n    } else if (node.tagName.toLowerCase() === 'a') {\n      return node\n    } else {\n      return this.getLink(node.parentNode)\n    }\n  },\n\n  getURLParams() {\n    let map = {}\n    location.href.replace(config.REGEX.QUERY_PARAMS, (m, k, v) => map[k] = v)\n    return map\n  },\n\n  isArray(item) {\n    return Object.prototype.toString.call(item) === '[object Array]'\n  },\n\n  regexify(input) {\n    input = this.isArray(input) ? input : [input]\n    return new RegExp(input.map(s => s.replace(/\\./g, '\\\\.')).join('|'), 'i')\n  },\n\n  /**\n   * Wraps a function and guards it from being invoked more than once\n   *\n   * @param  { Function } fn - the function to guard\n   * @return { Function }    - the wrapped function\n   */\n  callOnce(fn) {\n    let called = false\n\n    return function callOnceWrappedFunction() {\n      if (called) return\n      fn()\n      called = true\n    }\n  }\n}\n\nexport default util\n"
   },
   {
     "kind": "variable",

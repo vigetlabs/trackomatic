@@ -51,16 +51,35 @@
 </nav>
 
 <div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="trackomatic-automatic-google-analytics-tracking">Trackomatic: Automatic Google Analytics Tracking</h1>
+<ul>
+<li><a href="#user-content-about">About</a></li>
+<li><a href="#user-content-usage">Usage</a></li>
+<li><a href="#user-content-installation">Installation</a></li>
+<li><a href="#user-content-tracked-events">Tracked Events</a></li>
+<li><a href="#user-content-configuration">Configuration</a></li>
+<li><a href="#user-content-note-error-reporting">Note: Error Reporting</a></li>
+<li><a href="#user-content-public-api">Public API</a></li>
+<li><a href="#user-content-development">Development</a></li>
+</ul>
 <h2 id="about">About</h2>
 <p>Trackomatic is a high-performance tracking enhancement for Google Analytics. It standardizes common tracking setups and saves setup time. </p>
-<p>Note: Trackomatic.js is only compatible with Universal Analytics (analytics.js), not the older asynchronous Google Analytics (ga.js).</p>
+<p><strong>Note</strong>: Trackomatic.js is only compatible with Universal Analytics (analytics.js), not the older asynchronous Google Analytics (ga.js).</p>
+<h2 id="documentation">Documentation</h2>
+<p><a href="http://code.viget.com/trackomatic">http://code.viget.com/trackomatic</a></p>
+<h2 id="usage">Usage</h2>
+<p>Trackomatic is published to S3 and served by CloudFront. Urls are scoped by version. You may reference either the unpacked or minified lib based on need. Always used the minified file in production.</p>
+<p><a href="https://d1lmnvs8gamzin.cloudfront.net/1.1.0/trackomatic.dev.js">https://d1lmnvs8gamzin.cloudfront.net/1.1.0/trackomatic.dev.js</a>
+<a href="https://d1lmnvs8gamzin.cloudfront.net/1.1.0/trackomatic.min.js">https://d1lmnvs8gamzin.cloudfront.net/1.1.0/trackomatic.min.js</a></p>
+<p>Additionally, if you are less concerned with changes in reporting or feature-set then you may reference the latest version using the following url.</p>
+<p><a href="https://d1lmnvs8gamzin.cloudfront.net/latest/trackomatic.dev.js">https://d1lmnvs8gamzin.cloudfront.net/latest/trackomatic.dev.js</a>
+<a href="https://d1lmnvs8gamzin.cloudfront.net/latest/trackomatic.min.js">https://d1lmnvs8gamzin.cloudfront.net/latest/trackomatic.min.js</a></p>
 <h2 id="installation">Installation</h2>
 <p>To use Trackomatic, simply load trackomatic.js on your site and configure it as a plugin in your existing Google Analytics snippet. If you have installed GA through Google Tag Manager, you&apos;ll have to set a custom field.</p>
 <pre><code class="lang-javascript"><code class="source-code prettyprint">ga(&apos;create&apos;, &apos;UA-XXXXX-Y&apos;, &apos;auto&apos;);
 ga(&apos;require&apos;, &apos;trackomatic&apos;);
 ga(&apos;send&apos;, &apos;pageview&apos;);</code>
 </code></pre>
-<h2 id="custom-events">Custom Events</h2>
+<h2 id="tracked-events">Tracked Events</h2>
 <ul>
 <li>JS errors: when an on-page script throws an error, we send some basic diagnostic information back to GA.</li>
 <li>Viewport size: GA already tracks screen resolutions, but many people size their browser to only take up part of their screen, which can impact how we display content. Trackomatic fires an event when the page loads with details of viewport size and ratio.</li>
@@ -70,18 +89,24 @@ ga(&apos;send&apos;, &apos;pageview&apos;);</code>
 </ul>
 <h2 id="configuration">Configuration</h2>
 <p>Trackomatic accepts parameters to customize its tracking. Configuration parameters are passed as a configuration object when you initialize a plugin instance.</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">ga(&apos;create&apos;, &apos;UA-XXXXX-Y&apos;, &apos;auto&apos;);
+<pre><code class="lang-javascript"><code class="source-code prettyprint">// with trackomatic script included in the page...
+
+ga(&apos;create&apos;, &apos;UA-XXXXX-Y&apos;, &apos;auto&apos;);
 ga(&apos;require&apos;, &apos;trackomatic&apos;, {
-    files: &apos;\.pdf|\.docx|\.pptx&apos;, 
-    networks: &apos;reddit\.com&apos;, 
+    files: [&apos;.pdf&apos;, &apos;.docx&apos;, &apos;.pptx&apos;], 
+    networks: &apos;reddit.com&apos;, 
     redirectDelay: 100
 });
+
 ga(&apos;send&apos;, &apos;pageview&apos;);</code>
 </code></pre>
 <h3 id="configuration-options-">Configuration Options:</h3>
-<p><strong>debug</strong>: <code>true || false</code>, if <code>true</code> then replaces calls to <code>tracker.send</code>(GA) and <code>dataLayer.push</code>(GTM) with <code>console.log</code> statements.</p>
-<p><strong>files</strong>: takes a regex of file extensions to check against, and will fire an event on click. If no files are specified, Trackomatic will check for .pdf files only.</p>
-<p><strong>networks</strong>: takes an array of string social media network URLs, and fires an event on click. If no networks are specified, Trackomatic will track the following networks:</p>
+<p><strong>debug</strong>: <code>true || false</code>, if <code>true</code> then replaces calls to <code>tracker.send</code>(GA) and <code>dataLayer.push</code>(GTM) with <code>console.log</code> statements. <strong>Only applies when the unminified library is included.</strong></p>
+<p><strong>delimiter</strong>: Default: <code>|</code>. Used to parse values in <code>data-trackomatic</code> attributes to separate out Category, Action and Label for reporting.</p>
+<p><strong>prefix</strong>: default: &quot;Trackomatic&quot;. All events reported to GA / GTM will be prefixed with this string followed by a hyphen. (e.g. <code>Trackomatic - First Input</code>)</p>
+<p><strong>redirectDelay</strong>: to make sure our tracking data reaches Google&#x2019;s servers before a page reloads, Trackomatic adds in a small delay before loading the new page. By default, this delay is 100 milliseconds. You can make it longer or shorter if you prefer. <strong>Warning: setting this value too low risks potential loss of tracking data.</strong></p>
+<p><strong>files</strong>: takes a single string or array of string file extensions to check against, and will fire an event on click. If no files are specified, Trackomatic will check for <code>.pdf</code> files only.</p>
+<p><strong>networks</strong>: takes a single string or array of string social media network URLs, and fires an event on click. If no networks are specified, Trackomatic will track the following networks:</p>
 <ul>
 <li>Facebook</li>
 <li>Twitter</li>
@@ -91,28 +116,48 @@ ga(&apos;send&apos;, &apos;pageview&apos;);</code>
 <li>Tumblr</li>
 <li>Google Plus</li>
 </ul>
-<p><strong>prefix</strong>: default: &quot;trackomatic&quot;. All events reported to GA / GTM will be prefixed with this string followed by a hyphen. (e.g. <code>trackomatic-first-input</code>)</p>
-<p><strong>redirectDelay</strong>: to make sure our tracking data reaches Google&#x2019;s servers before a page reloads, Trackomatic adds in a small delay before loading the new page. By default, this delay is 100 milliseconds. You can make it longer or shorter if you prefer.</p>
-<h2 id="public-functions">Public Functions</h2>
+<h2 id="note-error-reporting">Note: Error Reporting</h2>
+<p>A service such as Sentry or AirBrake will give the best results. Trackomatic does track JavaScript errors via proxying <code>window.onerror</code> which has known drawbacks.</p>
+<h2 id="public-api">Public API</h2>
 <p>Trackomatic.js makes certain internal utility functions public by way of the global trackomatic object. The following functions are available under trackomatic.util:</p>
 <ul>
-<li>capitalize</li>
-<li>createAnchor</li>
-<li>createCookie</li>
-<li>createNavigationHandler</li>
-<li>debounce</li>
-<li>getHost</li>
-<li>getLink</li>
-<li>getPathname</li>
-<li>getViewportSize</li>
-<li>keyCode</li>
-<li>readCookie</li>
-<li>getURLParams</li>
-<li>roundXtoY</li>
-<li>slugify</li>
+<li><code>capitalize</code></li>
+<li><code>createAnchor</code></li>
+<li><code>createCookie</code></li>
+<li><code>createNavigationHandler</code></li>
+<li><code>debounce</code></li>
+<li><code>getHost</code></li>
+<li><code>getLink</code></li>
+<li><code>getPathname</code></li>
+<li><code>getViewportSize</code></li>
+<li><code>keyCode</code></li>
+<li><code>readCookie</code></li>
+<li><code>getURLParams</code></li>
+<li><code>roundXtoY</code></li>
+<li><code>slugify</code></li>
 </ul>
-<h2 id="error-reporting">Error Reporting</h2>
-<p>Use AirBrake if you can</p>
+<h2 id="development">Development</h2>
+<p>In order to set up and contribute to this project you&apos;ll need to configure a few things first. </p>
+<p>To begin, make sure you have Ruby installed.</p>
+<ul>
+<li>Ruby <a href="https://gorails.com/setup/osx/10.9-mavericks">recommended install guide</a></li>
+</ul>
+<p>Then run the <code>install</code> script:</p>
+<pre><code><code class="source-code prettyprint">$ ./bin/install</code>
+</code></pre><p>This will handle the installation and configuration of the following:</p>
+<ul>
+<li>NVM/Node/NPM</li>
+<li>Node Dependencies</li>
+<li>Gems</li>
+</ul>
+<p><strong>Note</strong>: The build script for Trackomatic automatically generates a folder inside <code>public</code> with the version number specified in <code>package.json</code>. When preparing a new version for release, ensure you have bumped the version accordingly using <code>npm version &lt;major | minor | patch&gt;</code>.</p>
+<h2 id="deployment">Deployment</h2>
+<p>In order to deploy Trackomatic to S3, you&apos;ll need to setup a few environment variables. This project uses <code>dotenv</code> to make this easier. Run the following command from the root of the project:</p>
+<pre><code><code class="source-code prettyprint">$ cp .env.example .env</code>
+</code></pre><p>Then open <code>.env</code> and fill in the Amazon S3 <code>ACCESS_KEY_ID</code> and <code>SECRET_ACCESS_KEY</code>.</p>
+<p>After that you should be set up to deploy to S3.</p>
+<pre><code><code class="source-code prettyprint">$ cap deploy</code>
+</code></pre><p>This will run through <code>./bin/build</code> creating the correct directory under <code>public</code> as well as handle symlinking the <code>latest</code> directory. Finally the <code>public</code> folder will by sync-ed to S3.</p>
 </div>
 </div>
 
