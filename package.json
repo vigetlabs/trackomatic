@@ -13,7 +13,6 @@
     "webpack": "./node_modules/.bin/webpack --config config/webpack.js",
     "webpack:production": "NODE_ENV=production ./node_modules/.bin/webpack --config config/webpack.js",
     "docs": "./node_modules/.bin/esdoc -c config/esdoc.js",
-    "docs:publish": "git subtree push --prefix docs origin gh-pages",
     "build": "./bin/build",
     "release": "./bin/release"
   },

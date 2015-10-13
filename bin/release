@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Is there a better way to get a package name? This is following:
+# 1. http://stackoverflow.com/questions/1955505/parsing-json-with-sed-and-awk
+# 2. http://stackoverflow.com/questions/17375940/decode-json-in-bash-using-python-mjson-tool
+PROJECT_VERSION=$(cat package.json | python -c 'import sys, json; print json.load(sys.stdin)["version"]')
+
 echo
 echo "Welcome. This script will build and publish Trackomatic."
 echo
@@ -12,6 +17,6 @@ then
     echo "Goodbye."
     exit
 else
-    cap deploy
-    npm run docs:publish
+    # cap deploy
+    git subtree push --prefix public/${PROJECT_VERSION}/docs origin gh-pages
 fi
