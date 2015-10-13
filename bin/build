@@ -9,16 +9,20 @@ var exec     = require('child_process').exec
 var project  = require('../package')
 var colors   = require('colors')
 var spin     = require('io-spin')
-var ncp      = require('ncp').ncp
 var async    = require('async')
 var rmdir    = require('rimraf')
 
-var publicDirPath   = path.join(__dirname, '..', 'public')
-var latestDirPath   = path.join(__dirname, '..', 'public', 'latest')
-var currentDirPath  = path.join(__dirname, '..', 'public', project.version)
+// library
+var rootPath        = path.join(__dirname, '..')
+var publicDirPath   = path.join(rootPath, 'public')
+var latestDirPath   = path.join(rootPath, 'public', 'latest')
+var currentDirPath  = path.join(rootPath, 'public', project.version)
 var relativePath    = path.relative(publicDirPath, currentDirPath)
-var docsPath        = path.join(__dirname, '..', 'docs')
-var currentDocsPath = path.join(currentDirPath, 'docs')
+
+// docs
+var latestDocsPath   = path.join(rootPath, 'docs')
+var currentDocsPath  = path.join(currentDirPath, 'docs')
+var relativeDocsPath = path.relative(rootPath, currentDocsPath)
 
 var now = new Date().getTime()
 
@@ -35,7 +39,10 @@ fs.stat(currentDirPath, function(err, data) {
 
   // folder already exists, prompt for permission to overwrite
   } else {
-    console.log('The folder "/public/' + project.version + '" already exists. Are you absolutely sure you want to overwrite it with the current build?')
+    console.log(
+      'The folder "/public/' + project.version + '" already exists. \
+       Are you absolutely sure you want to overwrite it with the current build?'
+     )
 
     prompt.message = "Overwrite?".yellow
     prompt.delimiter = " "
@@ -50,7 +57,10 @@ fs.stat(currentDirPath, function(err, data) {
       }
     }, function(err, result) {
       if (err) {
-        console.log('Prompt Error: Whoops, something went wrong receiving use input. Try running this script again.')
+        console.log(
+          'Prompt Error: Whoops, something went wrong receiving \
+           user input. Try running this script again.'
+         )
       }
 
       if (/[y]/i.test(result.proceed)) {
@@ -75,7 +85,7 @@ function build() {
     execWebpack,
     execWebpackProduction,
     generateDocs,
-    copyDocs,
+    symlinkDocs,
     symlink,
     report,
   ], function(err, results) {
@@ -134,30 +144,36 @@ function generateDocs(callback) {
   })
 }
 
+
 /**
- * Copies /docs to /public/<version>/docs
+ * Prepare public folder for deployment by symlinking 'latest'
+ * to the most recent build of Trackomatic
  **/
-function copyDocs(callback) {
-  rmdir(currentDocsPath, function(err) {
-    if (err) {
-      return callback(err)
+function symlinkDocs(callback) {
+  fs.lstat(latestDocsPath, function(err, stats) {
+    // if the 'latest' directory doesn't exist, err will be truthy
+    if (!err) {
+      // remove/unlink the file/symlink
+      if (stats.isSymbolicLink() || stats.isFile()) {
+        fs.unlinkSync(latestDocsPath)
+      // remove directory
+      } else {
+        fs.rmdirSync(latestDocsPath)
+      }
     }
 
-    // no error, continue with copying the docs folder
-    ncp(
-      docsPath,        // source
-      currentDocsPath, // destination
-      function(err) {
-        if (err) {
-          var error = '✘'.bold.red + ' Build Error: There was a problem \
-                       copying /docs to /public/' + project.version + '/docs.'
+    // then, create a symlink from 'public/latest' to
+    // the folder containing the most recent build
+    fs.symlink(relativeDocsPath, latestDocsPath, 'dir', function(err) {
+      if (err) {
+        var error = '✘'.bold.red + ' Build Error: Could not create a \
+                     symlink between /docs and ' + currentDocsPath
 
-          return callback(error)
-        }
-
-        callback(null, 'Successfully copied docs.')
+        return callback(error)
       }
-    )
+
+      callback(null, 'Successfully symlinked the docs directory.')
+    })
   })
 }
 

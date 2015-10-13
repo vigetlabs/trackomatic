@@ -12,10 +12,10 @@
     "dev": "./node_modules/.bin/webpack --watch --config config/webpack.js",
     "webpack": "./node_modules/.bin/webpack --config config/webpack.js",
     "webpack:production": "NODE_ENV=production ./node_modules/.bin/webpack --config config/webpack.js",
-    "docs": "./node_modules/.bin/esdoc -c config/esdoc.json",
+    "docs": "./node_modules/.bin/esdoc -c config/esdoc.js",
     "docs:publish": "git subtree push --prefix docs origin gh-pages",
     "build": "./bin/build",
-    "deploy": "cap deploy"
+    "release": "./bin/release"
   },
   "repository": {
     "type": "git",
@@ -49,7 +49,6 @@
     "karma-mocha-reporter": "^1.1.1",
     "karma-webpack": "^1.7.0",
     "mocha": "^2.3.3",
-    "ncp": "^2.0.0",
     "prompt": "^0.2.14",
     "rimraf": "^2.4.3",
     "sinon": "^1.17.1",
