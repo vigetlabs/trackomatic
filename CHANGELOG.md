@@ -2,7 +2,12 @@
 
 Do not forget to tag each release!
 
-## 1.1.0 (current)
+## 1.1.1 (current)
+- Added ./bin/install script for setting up project dependencies
+- Better information in README
+- Added ./bin/release for triggering `cap deploy`
+
+## 1.1.0
 - Large refactor of codebase modularity, testability focus
 - Bugfix: Respect anchor's "target" attribute when creating redirects
 - Bugfix: Do not redirect twice (redirect as hitCallback and in setTimeout)

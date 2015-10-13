@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo
+echo "Welcome. This script will build and publish Trackomatic."
+echo
+
+read -p "Continue? [y/n] " -n 1 -r
+echo
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    echo "Goodbye."
+    exit
+else
+    cap deploy
+    npm run docs:publish
+fi

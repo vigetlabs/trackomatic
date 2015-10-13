@@ -1,69 +1,252 @@
 #!/usr/bin/env node
-var fs      = require('fs')
-var path    = require('path')
-var Webpack = require('webpack')
-var spawn   = require('child_process').spawn
-var project = require('../package')
+require('console.table')
+
+var fs       = require('fs')
+var path     = require('path')
+var Webpack  = require('webpack')
+var prompt   = require('prompt')
+var exec     = require('child_process').exec
+var project  = require('../package')
+var colors   = require('colors')
+var spin     = require('io-spin')
+var ncp      = require('ncp').ncp
+var async    = require('async')
+var rmdir    = require('rimraf')
+
+var publicDirPath   = path.join(__dirname, '..', 'public')
+var latestDirPath   = path.join(__dirname, '..', 'public', 'latest')
+var currentDirPath  = path.join(__dirname, '..', 'public', project.version)
+var relativePath    = path.relative(publicDirPath, currentDirPath)
+var docsPath        = path.join(__dirname, '..', 'docs')
+var currentDocsPath = path.join(currentDirPath, 'docs')
+
+var now = new Date().getTime()
 
 /**
- * Set up ENV variables for development build
+ * Build entry point.
+ *
+ * Begin by checking whether the path to `public/<version>` exists, if so
+ * prompt for confirmation to overwrite current build.
  **/
-var DEV_ENV      = Object.create(process.env)
-DEV_ENV.NODE_ENV = 'development'
+fs.stat(currentDirPath, function(err, data) {
+  // folder does not exist, proceed to build step
+  if (err) {
+    build()
 
-spawn(
-  path.join(__dirname, '..', 'node_modules', '.bin', 'webpack'),
-  ['--config', 'config/webpack.js'],
-  { env: DEV_ENV }
-)
+  // folder already exists, prompt for permission to overwrite
+  } else {
+    console.log('The folder "/public/' + project.version + '" already exists. Are you absolutely sure you want to overwrite it with the current build?')
 
+    prompt.message = "Overwrite?".yellow
+    prompt.delimiter = " "
+
+    prompt.start()
+
+    prompt.get({
+      properties: {
+        proceed: {
+          description: 'Y'.green + '/' + 'N'.red
+        }
+      }
+    }, function(err, result) {
+      if (err) {
+        console.log('Prompt Error: Whoops, something went wrong receiving use input. Try running this script again.')
+      }
+
+      if (/[y]/i.test(result.proceed)) {
+        build()
+      } else {
+        console.log('✘'.bold.red + ' Build cancelled. Have a nice life.')
+        process.exit()
+      }
+    })
+  }
+})
 
 /**
- * Set up ENV variables for production build
+ * Triggers the build steps
  **/
-var PROD_ENV      = Object.create(process.env)
-PROD_ENV.NODE_ENV = 'production'
+function build() {
+  console.log('Building ' + colors.bold(project.version) + ' ...')
 
-spawn(
-  path.join(__dirname, '..', 'node_modules', '.bin', 'webpack'),
-  ['--config', 'config/webpack.js'],
-  { env: PROD_ENV }
-)
+  spin.start('Compiling: ', 'Box7')
 
+  async.series([
+    execWebpack,
+    execWebpackProduction,
+    generateDocs,
+    copyDocs,
+    symlink,
+    report,
+  ], function(err, results) {
+    if (err) {
+      console.log(err)
+      process.exit()
+    }
+  })
+}
+
+/**
+ * Executes `npm run webpack`
+ **/
+function execWebpack(callback) {
+  exec('npm run webpack', function(err, stdout, stderr) {
+    if (err) {
+      var error = '✘'.bold.red + ' Build Error: There was \
+                   a problem executing `npm run webpack`.'
+
+      return callback(error)
+    }
+
+    callback(null, stdout)
+  })
+}
+
+/**
+ * Executes `NODE_ENV=production npm run webpack:production`
+ **/
+function execWebpackProduction(callback) {
+  exec('npm run webpack:production', function(err, stdout, stderr) {
+    if (err) {
+      var error = '✘'.bold.red + ' Build Error: There was a problem \
+                   executing `npm run webpack:production`.'
+
+      return callback(error)
+    }
+
+    callback(null, stdout)
+  })
+}
+
+/**
+ * Executes esdoc via `npm run docs`
+ **/
+function generateDocs(callback) {
+  exec('npm run docs', function(err, stdout, stderr) {
+    if (err) {
+      var error =  '✘'.bold.red + ' Build Error: There was a problem \
+                    executing `npm run docs`.'
+
+      return callback(error)
+    }
+
+    callback(null, stdout)
+  })
+}
+
+/**
+ * Copies /docs to /public/<version>/docs
+ **/
+function copyDocs(callback) {
+  rmdir(currentDocsPath, function(err) {
+    if (err) {
+      return callback(err)
+    }
+
+    // no error, continue with copying the docs folder
+    ncp(
+      docsPath,        // source
+      currentDocsPath, // destination
+      function(err) {
+        if (err) {
+          var error = '✘'.bold.red + ' Build Error: There was a problem \
+                       copying /docs to /public/' + project.version + '/docs.'
+
+          return callback(error)
+        }
+
+        callback(null, 'Successfully copied docs.')
+      }
+    )
+  })
+}
 
 /**
  * Prepare public folder for deployment by symlinking 'latest'
  * to the most recent build of Trackomatic
  **/
-var publicDirPath  = path.join(__dirname, '..', 'public')
-var latestDirPath  = path.join(__dirname, '..', 'public', 'latest')
-var currentDirPath = path.join(__dirname, '..', 'public', project.version)
-var relativePath   = path.relative(publicDirPath, currentDirPath)
+function symlink(callback) {
+  spin.destroy()
 
-fs.lstat(latestDirPath, function(err, stats) {
-  // if the 'latest' directory doesn't exist, err will be truthy
-  if (!err) {
-    // remove/unlink the file/symlink
-    if (stats.isSymbolicLink() || stats.isFile()) {
-      fs.unlinkSync(latestDirPath)
-    // remove directory
-    } else {
-      fs.rmdirSync(latestDirPath)
-    }
-  }
+  console.log('Symlinking "/public/latest" to  "/public/' + project.version + '" ...')
 
-  // then, create a symlink from 'public/latest' to
-  // the folder containing the most recent build
-  fs.symlink(
-    relativePath,
-    latestDirPath,
-    'dir',
-    function(err) {
-      if (err) {
-        console.log('Build Error: Could not create a symlink between %s and %s', latestDirPath, currentDirPath)
-        console.log(err)
+  fs.lstat(latestDirPath, function(err, stats) {
+    // if the 'latest' directory doesn't exist, err will be truthy
+    if (!err) {
+      // remove/unlink the file/symlink
+      if (stats.isSymbolicLink() || stats.isFile()) {
+        fs.unlinkSync(latestDirPath)
+      // remove directory
+      } else {
+        fs.rmdirSync(latestDirPath)
       }
     }
-  )
-})
 
+    // then, create a symlink from 'public/latest' to
+    // the folder containing the most recent build
+    fs.symlink(relativePath, latestDirPath, 'dir', function(err) {
+      if (err) {
+        var error = '✘'.bold.red + ' Build Error: Could not create a symlink \
+                     between ' + latestDirPath + ' and ' + currentDirPath
+
+        return callback(error)
+      }
+
+      callback(null, 'Successfully symlinked the latest directory.')
+    })
+  })
+}
+
+/**
+ * Reports elapsed time and minified file size
+ **/
+function report(callback) {
+  var elapsed = new Date().getTime() - now
+  var minFile = path.join(currentDirPath, 'trackomatic.min.js')
+
+  console.log('')
+  console.log('✓'.bold.green + ' Done!')
+
+  console.log(
+    'Build ' + colors.bold(project.version) +
+    ' finished successfully in ' + colors.bold(elapsed) + 'ms.', ''
+  )
+
+  reportFileSize(minFile)
+
+  callback(null)
+}
+
+/**
+ * Logs the filesize and gzipped size in a table to the terminal
+ **/
+function reportFileSize(file) {
+  var size = getFileSizeSync(file)
+
+  getGzipSize(file, function(err, gzippedSize) {
+    console.log(file)
+    console.log('')
+
+    console.table([{
+      'Size': size,
+      'Gzipped': gzippedSize
+    }])
+  })
+}
+
+/**
+ * Gets filesize using fs.statSync
+ **/
+function getFileSizeSync(file) {
+  var stats = fs.statSync(file)
+  return stats.size
+}
+
+/**
+ * Gets gzipped filesize by executing `gzip -c FILE | wc - c`
+ **/
+function getGzipSize(file, callback) {
+  exec("gzip -c " + file + " | wc -c", function(err, stdout, stderr) {
+    callback(err, stdout.trim())
+  })
+}
