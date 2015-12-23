@@ -342,7 +342,7 @@ function Trackomatic(tracker, config) {
           return url.replace(/^https?:\/\//, '').split('/')[0]
         }
         var getVisitData = function(event, link) {
-          var url           = link.href
+          var url           = link.href === "" ? window.location.href : link.href
           var differentHost = getHost(url) !== getHost(window.location.href)
           var rightClick    = event.which === 3
           var metaKey       = event.ctrlKey || event.metaKey || event.altKey
