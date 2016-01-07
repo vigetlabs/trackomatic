@@ -14,10 +14,10 @@ var rmdir    = require('rimraf')
 
 // library
 var rootPath        = path.join(__dirname, '..')
-var publicDirPath   = path.join(rootPath, 'public')
-var latestDirPath   = path.join(rootPath, 'public', 'latest')
-var currentDirPath  = path.join(rootPath, 'public', project.version)
-var relativePath    = path.relative(publicDirPath, currentDirPath)
+var distDirPath     = path.join(rootPath, 'dist')
+var latestDirPath   = path.join(rootPath, 'dist', 'latest')
+var currentDirPath  = path.join(rootPath, 'dist', project.version)
+var relativePath    = path.relative(distDirPath, currentDirPath)
 
 // docs
 var latestDocsPath   = path.join(rootPath, 'docs')
@@ -29,7 +29,7 @@ var now = new Date().getTime()
 /**
  * Build entry point.
  *
- * Begin by checking whether the path to `public/<version>` exists, if so
+ * Begin by checking whether the path to `dist/<version>` exists, if so
  * prompt for confirmation to overwrite current build.
  **/
 fs.stat(currentDirPath, function(err, data) {
@@ -40,7 +40,7 @@ fs.stat(currentDirPath, function(err, data) {
   // folder already exists, prompt for permission to overwrite
   } else {
     console.log(
-      'The folder "/public/' + project.version + '" already exists. \
+      'The folder "/dist/' + project.version + '" already exists. \
        Are you absolutely sure you want to overwrite it with the current build?'
      )
 
@@ -146,7 +146,7 @@ function generateDocs(callback) {
 
 
 /**
- * Prepare public folder for deployment by symlinking 'latest'
+ * Prepare dist folder for deployment by symlinking 'latest'
  * to the most recent build of Trackomatic
  **/
 function symlinkDocs(callback) {
@@ -162,7 +162,7 @@ function symlinkDocs(callback) {
       }
     }
 
-    // then, create a symlink from 'public/latest' to
+    // then, create a symlink from 'dist/latest' to
     // the folder containing the most recent build
     fs.symlink(relativeDocsPath, latestDocsPath, 'dir', function(err) {
       if (err) {
@@ -178,13 +178,13 @@ function symlinkDocs(callback) {
 }
 
 /**
- * Prepare public folder for deployment by symlinking 'latest'
+ * Prepare dist folder for deployment by symlinking 'latest'
  * to the most recent build of Trackomatic
  **/
 function symlink(callback) {
   spin.destroy()
 
-  console.log('Symlinking "/public/latest" to  "/public/' + project.version + '" ...')
+  console.log('Symlinking "/dist/latest" to  "/dist/' + project.version + '" ...')
 
   fs.lstat(latestDirPath, function(err, stats) {
     // if the 'latest' directory doesn't exist, err will be truthy
@@ -198,7 +198,7 @@ function symlink(callback) {
       }
     }
 
-    // then, create a symlink from 'public/latest' to
+    // then, create a symlink from 'dist/latest' to
     // the folder containing the most recent build
     fs.symlink(relativePath, latestDirPath, 'dir', function(err) {
       if (err) {
