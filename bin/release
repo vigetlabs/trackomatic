@@ -17,6 +17,5 @@ then
     echo "Goodbye."
     exit
 else
-    # cap deploy
-    git subtree push --prefix public/${PROJECT_VERSION}/docs origin gh-pages
+    ./node_modules/.bin/dotenv ./bin/deploy
 fi

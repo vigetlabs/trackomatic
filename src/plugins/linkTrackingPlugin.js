@@ -23,10 +23,10 @@ class LinkTrackingPlugin extends BasePlugin {
    * @returns { Void }
    **/
   onLinkClick(e) {
-    let link = this.__trackomatic__.util.getLink(e.target || e.srcElement)
+    const link = this.__trackomatic__.util.getLink(e.target || e.srcElement)
 
     if (link) {
-      let data = this.getVisitData(e, link)
+      const data = this.getVisitData(e, link)
 
       if (data) {
         this.interceptVisit(e, link, data)
@@ -42,23 +42,27 @@ class LinkTrackingPlugin extends BasePlugin {
    * @returns { Object }      - the extracted category, action, and label for this link
    **/
   getVisitData(e, link) {
-    let { util, config, options } = this.__trackomatic__
+    const { util, config, options } = this.__trackomatic__
 
-    let url        = link.href
-    let keyCode    = util.keyCode(e)
-    let rightClick = keyCode === config.KEYS.RIGHT_CLICK
-    let metaKey    = e.ctrlKey || e.metaKey || e.altKey
+    const url = link.href
+
+    // return if no href
+    if (!url) return
+
+    const keyCode    = util.keyCode(e)
+    const rightClick = keyCode === config.KEYS.RIGHT_CLICK
+    const metaKey    = e.ctrlKey || e.metaKey || e.altKey
 
     // unless right click or a modifier key is pressed, return the visit data
     if (!rightClick && !metaKey) {
-      let extractedAttributes = this.extractAutoTrackingAttributes(url)
+      const extractedAttributes = this.extractAutoTrackingAttributes(url)
 
       if (extractedAttributes) {
-        let map = { ...extractedAttributes, label: url }
-        let trackomaticAttributes = link.getAttribute('data-trackomatic')
+        const map = { ...extractedAttributes, label: url }
+        const trackomaticAttributes = link.getAttribute('data-trackomatic')
 
         if (trackomaticAttributes) {
-          let [category, action, label] = trackomaticAttributes.split(options.delimiter)
+          const [category, action, label] = trackomaticAttributes.split(options.delimiter)
 
           map.category = category || map.category
           map.action   = action   || map.action
@@ -77,8 +81,8 @@ class LinkTrackingPlugin extends BasePlugin {
    * @returns { Void | Object }     - Extracted parameters based on matching of url
    **/
   extractAutoTrackingAttributes(url) {
-    let { util, config, options } = this.__trackomatic__
-    let differentHost = util.getHost(url) !== util.getHost(window.location.href)
+    const { util, config, options } = this.__trackomatic__
+    const differentHost = (util.getHost(url) !== util.getHost(window.location.href))
 
     if (url.match(options.files)) {
       return { category: 'File Click', action: 'click' }
@@ -104,10 +108,10 @@ class LinkTrackingPlugin extends BasePlugin {
    * @returns { Void }
    **/
   interceptVisit(e, link, { category, action, label }) {
-    let { config, options } = this.__trackomatic__
+    const { config, options } = this.__trackomatic__
 
-    let delay    = Math.min(options.redirectDelay, config.MAX_REDIRECT_DELAY)
-    let redirect = this.createRedirect(link)
+    const delay    = Math.min(options.redirectDelay, config.MAX_REDIRECT_DELAY)
+    const redirect = this.createRedirect(link)
 
     // track visit
     this.track({ category, action, label, hitCallback : redirect })
@@ -129,7 +133,7 @@ class LinkTrackingPlugin extends BasePlugin {
    * @returns { Void | Function }      - Protected redirect function
    **/
   createRedirect(link) {
-    let { util, options } = this.__trackomatic__
+    const { util, options } = this.__trackomatic__
 
     if (__DEV__ && options.debug) {
       return util.noop

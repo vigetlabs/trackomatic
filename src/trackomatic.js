@@ -18,6 +18,7 @@ class Trackomatic {
    **/
   constructor(tracker, options={}) {
     window._trackomatic = window._trackomatic || this
+
     this.util    = util
     this.config  = config
     this.tracker = tracker
@@ -89,7 +90,7 @@ class Trackomatic {
    * @return { Object }        - The tracking object with prefixed properties
    **/
   prefix({ category, ...params }) {
-    let { prefix } = this.options
+    const { prefix } = this.options
     return { ...params, category: `${ prefix } - ${ category }` }
   }
 
@@ -101,8 +102,8 @@ class Trackomatic {
    **/
   notifyGTM(params) {
     // extract params that shouldn't be sent to GTM
-    let { nonInteraction, hitType, hitCallback, ...GTMParams } = params
-    let GTMLoaded = typeof dataLayer !== typeof undefined
+    const { nonInteraction, hitType, hitCallback, ...GTMParams } = params
+    const GTMLoaded = (typeof dataLayer !== typeof undefined)
 
     if (__DEV__ && this.options.debug) {
       console.log('dataLayer.push(..): ')
