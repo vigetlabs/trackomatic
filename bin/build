@@ -16,10 +16,10 @@ var DIST_DIRNAME   = 'dist'
 var DOCS_DIRNAME   = 'docs'
 var PUBLIC_DIRNAME = 'public'
 var LATEST_DIRNAME = 'latest'
+
 // library
 var rootPath        = path.join(__dirname, '..')
 var distDirPath     = path.join(rootPath, DIST_DIRNAME)
-var publicDirPath   = path.join(rootPath, PUBLIC_DIRNAME)
 var latestDirPath   = path.join(rootPath, DIST_DIRNAME, LATEST_DIRNAME)
 var currentDirPath  = path.join(rootPath, DIST_DIRNAME, project.version)
 var relativePath    = path.relative(distDirPath, currentDirPath)
@@ -91,7 +91,6 @@ function build() {
     execWebpackProduction,
     generateDocs,
     symlink,
-    symlinkPublic,
     report,
   ], function(err, results) {
     if (err) {
@@ -181,41 +180,6 @@ function symlink(callback) {
       }
 
       callback(null, 'Successfully symlinked the latest directory.')
-    })
-  })
-}
-
-/**
- * Prepare dist folder for deployment by symlinking 'latest'
- * to the most recent build of Trackomatic
- **/
-function symlinkPublic(callback) {
-  spin.destroy()
-
-  console.log('Symlinking "/public" to  "/dist"')
-
-  fs.lstat(publicDirPath, function(err, stats) {
-    // if the 'latest' directory doesn't exist, err will be truthy
-    if (!err) {
-      // remove/unlink the file/symlink
-      if (stats.isSymbolicLink() || stats.isFile()) {
-        fs.unlinkSync(publicDirPath)
-      // remove directory
-      } else {
-        fs.rmdirSync(publicDirPath)
-      }
-    }
-
-    // then, create a symlink from 'public' to 'dist'
-    fs.symlink(DIST_DIRNAME, publicDirPath, 'dir', function(err) {
-      if (err) {
-        var error = '✘'.bold.red + ' Build Error: Could not create a symlink \
-                     between ' + distDirPath + ' and ' + publicDirPath
-
-        return callback(error)
-      }
-
-      callback(null, 'Successfully symlinked the public directory.')
     })
   })
 }

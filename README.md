@@ -141,16 +141,35 @@ This will handle the installation and configuration of the following:
 **Note**: The build script for Trackomatic automatically generates a folder inside `public` with the version number specified in `package.json`. When preparing a new version for release, ensure you have bumped the version accordingly using `npm version <major | minor | patch>`.
 
 
-## Deployment
+## Releases
 
-In order to deploy Trackomatic to S3, you'll need to setup a few environment variables. This project uses `dotenv` to make this easier. Run the following command from the root of the project:
+The release process for Trackomatic has several steps:
+
+1) Generate documentation (using Esdoc)
+2) Deploy documentation to gh-pages (using [git-directory-deploy](https://github.com/X1011/git-directory-deploy))
+3) Compile Trackomatic from source (dev & prod versions)
+4) Sync the compiled files to S3
+
+In order to deploy Trackomatic to S3, you'll need to setup a few environment variables. Run the following command from the root of the project:
 
     $ cp .env.example .env
 
-Then open `.env` and fill in the Amazon S3 `ACCESS_KEY_ID` and `SECRET_ACCESS_KEY`.
+Then open `.env` and fill in the missing variables. The following are required in order to deploy to S3.
 
-After that you should be set up to deploy to S3 by issuing the following command:
+    AWS_S3_BUCKET=< name of S3 bucket >
+    AWS_ACCESS_KEY_ID=< aws access key id >
+    AWS_SECRET_ACCESS_KEY=< aws access key secret >
 
-    $ cap deploy
+The following are required in order to upload documentation to GitHub.
+
+    GIT_DEPLOY_DIR=docs
+    GIT_DEPLOY_BRANCH=gh-pages
+    GIT_DEPLOY_TOKEN=< generate using github >
+
+By using a Private GitHub Token we obviate the need for maintainers to log in to git locally. Instead, identity is verified through the generated token.
+
+After setting everything up, deployment is as simple as:
+
+    $ npm run release
 
 This will run through `./bin/build` creating a version directory if needed under `dist` as well as handle symlinking the `latest` directory. Finally the `dist` folder will be sync-ed to S3.
