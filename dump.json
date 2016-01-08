@@ -9,7 +9,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import assert from 'assert'\nimport Plugin from '../plugin'\n\ndescribe('Plugin', function() {\n  let trackomaticMock\n\n  beforeEach(() => {\n    trackomaticMock = {\n      track: sinon.stub()\n    }\n  })\n\n  afterEach(() => {\n    trackomaticMock = null\n  })\n\n  it('stores a reference to the instance of Trackomatic as this.__trackomatic__', function() {\n    let plugin = new Plugin(trackomaticMock)\n\n    assert.equal(plugin.__trackomatic__, trackomaticMock)\n  })\n\n  it('provides a method that proxies Trackomatic.track() as this.track()', function() {\n    let plugin = new Plugin(trackomaticMock)\n    let params = {}\n\n    plugin.track(params)\n\n    assert(trackomaticMock.track.calledWith(params))\n  })\n})\n"
+    "content": "import assert from 'assert'\nimport Plugin from '../plugin'\n\n/** @test { Plugin } */\ndescribe('Plugin', function() {\n  let trackomaticMock\n\n  beforeEach(() => {\n    trackomaticMock = {\n      track: sinon.stub()\n    }\n  })\n\n  afterEach(() => {\n    trackomaticMock = null\n  })\n\n  it('stores a reference to the instance of Trackomatic as this.__trackomatic__', function() {\n    let plugin = new Plugin(trackomaticMock)\n\n    assert.equal(plugin.__trackomatic__, trackomaticMock)\n  })\n\n  it('provides a method that proxies Trackomatic.track() as this.track()', function() {\n    let plugin = new Plugin(trackomaticMock)\n    let params = {}\n\n    plugin.track(params)\n\n    assert(trackomaticMock.track.calledWith(params))\n  })\n})\n"
   },
   {
     "kind": "file",
@@ -21,7 +21,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import assert from 'assert'\nimport Trackomatic from '../trackomatic'\n\ndescribe('Trackomatic', function() {\n  let trackerMock = null\n\n  beforeEach(() => {\n    trackerMock = {\n      get: sinon.stub()\n    }\n  })\n\n  it('stores the provided tracker', function() {\n    let tracker = {}\n    let instance = new Trackomatic(tracker)\n\n    assert.equal(instance.tracker, tracker)\n  })\n\n  it('extends default config settings with provided options', function() {\n    let options = { redirectDelay: 1 }\n    let instance = new Trackomatic({}, options)\n\n    assert.equal(instance.options.redirectDelay, 1)\n  })\n\n  it('converts configured `files` and `networks` options into RegExp objects', function() {\n    let options = { files: [ '.pdf', '.swf' ] }\n    let instance = new Trackomatic({}, options)\n\n    assert(instance.options.files instanceof RegExp)\n    assert(instance.options.files.test('foo.pdf'))\n  })\n\n  it('warns when dataLayer is undefined if options.debug is true', function() {\n    let stub = sinon.stub(window.console, 'log')\n\n    let options = { debug: 1 }\n    let instance = new Trackomatic(trackerMock, options)\n\n    // Trackomatic.boot is normally called in response to domready so\n    // we just call it directly in order to simulate this\n    instance.boot()\n\n    assert(stub.called)\n  })\n\n  it('prepends the prefix to the Category field of tracking calls if options.prefix is not empty', function() {\n    let options = { prefix: 'test' }\n    let instance = new Trackomatic(trackerMock, options)\n\n    // Trackomatic.boot is normally called in response to domready so\n    // we just call it directly in order to simulate this\n    let prefixed = instance.prefix({ category: 'Category' })\n\n    assert.equal(prefixed.category, 'test - Category')\n  })\n})\n"
+    "content": "import assert from 'assert'\nimport Trackomatic from '../trackomatic'\n\n/** @test { Trackomatic } */\ndescribe('Trackomatic', function() {\n  let trackerMock = null\n\n  beforeEach(() => {\n    trackerMock = {\n      get: sinon.stub()\n    }\n  })\n\n  it('stores the provided tracker', function() {\n    let tracker = {}\n    let instance = new Trackomatic(tracker)\n\n    assert.equal(instance.tracker, tracker)\n  })\n\n  it('extends default config settings with provided options', function() {\n    let options = { redirectDelay: 1 }\n    let instance = new Trackomatic({}, options)\n\n    assert.equal(instance.options.redirectDelay, 1)\n  })\n\n  it('converts configured `files` and `networks` options into RegExp objects', function() {\n    let options = { files: [ '.pdf', '.swf' ] }\n    let instance = new Trackomatic({}, options)\n\n    assert(instance.options.files instanceof RegExp)\n    assert(instance.options.files.test('foo.pdf'))\n  })\n\n  it('warns when dataLayer is undefined if options.debug is true', function() {\n    let stub = sinon.stub(window.console, 'log')\n\n    let options = { debug: 1 }\n    let instance = new Trackomatic(trackerMock, options)\n\n    // Trackomatic.boot is normally called in response to domready so\n    // we just call it directly in order to simulate this\n    instance.boot()\n\n    assert(stub.called)\n  })\n\n  it('prepends the prefix to the Category field of tracking calls if options.prefix is not empty', function() {\n    let options = { prefix: 'test' }\n    let instance = new Trackomatic(trackerMock, options)\n\n    // Trackomatic.boot is normally called in response to domready so\n    // we just call it directly in order to simulate this\n    let prefixed = instance.prefix({ category: 'Category' })\n\n    assert.equal(prefixed.category, 'test - Category')\n  })\n})\n"
   },
   {
     "kind": "file",
@@ -33,7 +33,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import assert from 'assert'\nimport util from '../util'\n\ndescribe('util', function() {\n\n  describe('createAnchor()', function() {\n    it('creates an anchor node and sets the href', function() {\n      let anchor = util.createAnchor('http://foo.com/')\n      let proto = Object.prototype.toString.call(anchor)\n\n      assert.equal(anchor.href, 'http://foo.com/')\n      assert.equal(proto, '[object HTMLAnchorElement]')\n    })\n  })\n\n  describe('getPathname()', function() {\n    it('extracts the pathname from a url', function() {\n      let pathname = util.getPathname('http://foo.com/bar/baz')\n      assert.equal(pathname, '/bar/baz')\n    })\n  })\n\n  describe('slugify()', function() {\n    it('converts a string with spaces into a suitable all lowercase slug', function() {\n      let result = util.slugify('fOO bar BAz')\n      assert.equal(result, 'foo-bar-baz')\n    })\n\n    it('removes non-word characters but leaves numbers intact', function() {\n      let result = util.slugify('foo *@& !bar. baz')\n      assert.equal(result, 'foo-bar-baz')\n    })\n\n    it('converts double hyphens to single hyphens and prunes hypens from the start and end', function() {\n      let result = util.slugify('------foo--bar baz-')\n      assert.equal(result, 'foo-bar-baz')\n    })\n  })\n\n  describe('callOnce()', function() {\n    it('returns a wrapped function that is guarded from being invoked more than once', function() {\n      let stub = sinon.stub()\n      let wrapped = util.callOnce(stub)\n\n      wrapped()\n      wrapped()\n      wrapped()\n\n      assert(stub.calledOnce)\n    })\n  })\n})\n"
+    "content": "import assert from 'assert'\nimport util from '../util'\n\n/** @test { Util } */\ndescribe('util', function() {\n\n  describe('createAnchor()', function() {\n    it('creates an anchor node and sets the href', function() {\n      let anchor = util.createAnchor('http://foo.com/')\n      let proto = Object.prototype.toString.call(anchor)\n\n      assert.equal(anchor.href, 'http://foo.com/')\n      assert.equal(proto, '[object HTMLAnchorElement]')\n    })\n  })\n\n  describe('getPathname()', function() {\n    it('extracts the pathname from a url', function() {\n      let pathname = util.getPathname('http://foo.com/bar/baz')\n      assert.equal(pathname, '/bar/baz')\n    })\n  })\n\n  describe('slugify()', function() {\n    it('converts a string with spaces into a suitable all lowercase slug', function() {\n      let result = util.slugify('fOO bar BAz')\n      assert.equal(result, 'foo-bar-baz')\n    })\n\n    it('removes non-word characters but leaves numbers intact', function() {\n      let result = util.slugify('foo *@& !bar. baz')\n      assert.equal(result, 'foo-bar-baz')\n    })\n\n    it('converts double hyphens to single hyphens and prunes hypens from the start and end', function() {\n      let result = util.slugify('------foo--bar baz-')\n      assert.equal(result, 'foo-bar-baz')\n    })\n  })\n\n  describe('callOnce()', function() {\n    it('returns a wrapped function that is guarded from being invoked more than once', function() {\n      let stub = sinon.stub()\n      let wrapped = util.callOnce(stub)\n\n      wrapped()\n      wrapped()\n      wrapped()\n\n      assert(stub.calledOnce)\n    })\n  })\n})\n"
   },
   {
     "kind": "file",
@@ -1425,7 +1425,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "const ready   = require('domready')\nconst plugins = require('./plugins')\nconst config  = require('./config')\nconst util    = require('./util')\n\nconst defaultTrackParams = require('./trackParams')\n\n/**\n * When called with `new`, creates a new instance of the Trackomatic analytics class\n */\nclass Trackomatic {\n  /**\n   * Trackomatic class constructor\n   *\n   * @param  { Object } tracker - Tracker passed in by Google Analytics\n   * @param  { Object } options - Trackomatic configuration object\n   * @return { Void }\n   **/\n  constructor(tracker, options={}) {\n    window._trackomatic = window._trackomatic || this\n\n    this.util    = util\n    this.config  = config\n    this.tracker = tracker\n    this.options = this.prepare({ ...config.DEFAULTS, ...options })\n\n    ready(this.boot.bind(this))\n  }\n\n  /**\n   * Prepares the Trackomatic options by converting `options.networks`\n   * and `options.files` from Strings or Array<String> into RegExp\n   *\n   * @param  { Object } options - Trackomatic's options object\n   * @return { Object }         - The prepared options object\n   **/\n  prepare(options) {\n    return {\n      ...options,\n      networks : util.regexify(options.networks),\n      files    : util.regexify(options.files)\n    }\n  }\n\n  /**\n   * Loads all of Trackomatic's plugins\n   *\n   * @return { Void }\n   **/\n  boot() {\n    if (__DEV__ && this.options.debug) {\n      console.log(\n        'Loaded trackomatic on tracker ' + this.tracker.get('name') +\n        ' with the config object ' + JSON.stringify(this.options)\n      )\n\n      // window.dataLayer is provided by GTM\n      if (typeof dataLayer === typeof undefined) {\n        console.warn(\n          'Warning: Trackomatic could not find the global \\\n          \"dataLayer\" object from GTM. Did you load GTM first?'\n        )\n      }\n    }\n\n    for (let key in plugins) {\n      new plugins[key](this)\n    }\n  }\n\n  /**\n   * Sends track parameters to the configured Google Analytics account via\n   * the tracker that was passed to the Trackomatic constructor\n   *\n   * @param  { Object } params - Object of keys and values to send to GA/GTM\n   * @return { Void }\n   **/\n  track(params) {\n    params = this.prefix({ ...defaultTrackParams, ...params })\n\n    this.notifyGA(params)\n    this.notifyGTM(params)\n  }\n\n  /**\n   * When given a trackomatic tracking object, this function will add the\n   * configured prefix to the `category` property\n   *\n   * @param  { Object } params - Tracking object to be prefixed\n   * @return { Object }        - The tracking object with prefixed properties\n   **/\n  prefix({ category, ...params }) {\n    const { prefix } = this.options\n    return { ...params, category: `${ prefix } - ${ category }` }\n  }\n\n  /**\n   * Provided `window.dataLayer` exists, `notifyGTM` will push values to it\n   *\n   * @param  { Object } params - Object of keys and values to send to GTM\n   * @return { Void }\n   **/\n  notifyGTM(params) {\n    // extract params that shouldn't be sent to GTM\n    const { nonInteraction, hitType, hitCallback, ...GTMParams } = params\n    const GTMLoaded = (typeof dataLayer !== typeof undefined)\n\n    if (__DEV__ && this.options.debug) {\n      console.log('dataLayer.push(..): ')\n      console.log(JSON.stringify(GTMParams, null, '  '))\n      return\n    }\n\n    GTMLoaded && dataLayer.push(GTMParams)\n  }\n\n  /**\n   * Sends track parameters to the configured Google Analytics account via\n   * the tracker that was passed to the Trackomatic constructor\n   *\n   * @param  { Object } params - Object of keys and values to send to GTM\n   * @return { Void }\n   **/\n  notifyGA(params) {\n    let GAParams = [\n      params.hitType,\n      params.category,\n      params.action,\n      params.label,\n      params.value,\n      {\n        nonInteraction : params.nonInteraction,\n        hitCallback    : params.hitCallback\n      }\n    ]\n\n    if (__DEV__ && this.options.debug) {\n      console.log('tracker.send(..): ')\n      console.log(JSON.stringify(GAParams, null, '  '))\n      return\n    }\n\n    this.tracker.send(...GAParams)\n  }\n}\n\nexport default Trackomatic\n"
+    "content": "const ready   = require('domready')\nconst plugins = require('./plugins')\nconst config  = require('./config')\nconst util    = require('./util')\n\nconst defaults = require('./trackParams')\n\n/**\n * When called with `new`, creates a new instance of the Trackomatic analytics class\n */\nclass Trackomatic {\n  /**\n   * Trackomatic class constructor\n   *\n   * @param  { Object } tracker - Tracker passed in by Google Analytics\n   * @param  { Object } options - Trackomatic configuration object\n   * @return { Void }\n   **/\n  constructor(tracker, options={}) {\n    window._trackomatic = window._trackomatic || this\n\n    this.util    = util\n    this.config  = config\n    this.tracker = tracker\n    this.options = this.prepare({ ...config.DEFAULTS, ...options })\n\n    ready(this.boot.bind(this))\n  }\n\n  /**\n   * Prepares the Trackomatic options by converting `options.networks`\n   * and `options.files` from Strings or Array<String> into RegExp\n   *\n   * @param  { Object } options - Trackomatic's options object\n   * @return { Object }         - The prepared options object\n   **/\n  prepare(options) {\n    return {\n      ...options,\n      networks : util.regexify(options.networks),\n      files    : util.regexify(options.files)\n    }\n  }\n\n  /**\n   * Loads all of Trackomatic's plugins\n   *\n   * @return { Void }\n   **/\n  boot() {\n    if (__DEV__ && this.options.debug) {\n      console.log(\n        'Loaded trackomatic on tracker ' + this.tracker.get('name') +\n        ' with the config object ' + JSON.stringify(this.options)\n      )\n\n      // window.dataLayer is provided by GTM\n      if (typeof dataLayer === typeof undefined) {\n        console.warn(\n          'Warning: Trackomatic could not find the global \\\n          \"dataLayer\" object from GTM. Did you load GTM first?'\n        )\n      }\n    }\n\n    for (let key in plugins) {\n      new plugins[key](this)\n    }\n  }\n\n  /**\n   * Sends track parameters to the configured Google Analytics account via\n   * the tracker that was passed to the Trackomatic constructor\n   *\n   * @param  { Object } params - Object of keys and values to send to GA/GTM\n   * @return { Void }\n   **/\n  track(params) {\n    params = this.prefix({ ...defaults, ...params })\n\n    this.notifyGA(params)\n    this.notifyGTM(params)\n  }\n\n  /**\n   * When given a trackomatic tracking object, this function will add the\n   * configured prefix to the `category` property\n   *\n   * @param  { Object } params - Tracking object to be prefixed\n   * @return { Object }        - The tracking object with prefixed properties\n   **/\n  prefix({ category, ...params }) {\n    const { prefix } = this.options\n    return { ...params, category: `${ prefix } - ${ category }` }\n  }\n\n  /**\n   * Provided `window.dataLayer` exists, `notifyGTM` will push values to it\n   *\n   * @param  { Object } params - Object of keys and values to send to GTM\n   * @return { Void }\n   **/\n  notifyGTM(params) {\n    // extract params that shouldn't be sent to GTM\n    const { nonInteraction, hitType, hitCallback, ...GTMParams } = params\n    const GTMLoaded = (typeof dataLayer !== typeof undefined)\n\n    if (__DEV__ && this.options.debug) {\n      console.log('dataLayer.push(..): ')\n      console.log(JSON.stringify(GTMParams, null, '  '))\n      return\n    }\n\n    GTMLoaded && dataLayer.push(GTMParams)\n  }\n\n  /**\n   * Sends track parameters to the configured Google Analytics account via\n   * the tracker that was passed to the Trackomatic constructor\n   *\n   * @param  { Object } params - Object of keys and values to send to GTM\n   * @return { Void }\n   **/\n  notifyGA(params) {\n    let GAParams = [\n      params.hitType,\n      params.category,\n      params.action,\n      params.label,\n      params.value,\n      {\n        nonInteraction : params.nonInteraction,\n        hitCallback    : params.hitCallback\n      }\n    ]\n\n    if (__DEV__ && this.options.debug) {\n      console.log('tracker.send(..): ')\n      console.log(JSON.stringify(GAParams, null, '  '))\n      return\n    }\n\n    this.tracker.send(...GAParams)\n  }\n}\n\nexport default Trackomatic\n"
   },
   {
     "kind": "variable",
@@ -1511,9 +1511,9 @@
     "kind": "variable",
     "static": true,
     "variation": null,
-    "name": "defaultTrackParams",
+    "name": "defaults",
     "memberof": "src/trackomatic.js",
-    "longname": "src/trackomatic.js~defaultTrackParams",
+    "longname": "src/trackomatic.js~defaults",
     "access": null,
     "export": false,
     "importPath": "trackomatic/src/trackomatic.js",
@@ -2562,7 +2562,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import assert from 'assert'\nimport Plugin from '../plugin'\n\ndescribe('Plugin', function() {\n  let trackomaticMock\n\n  beforeEach(() => {\n    trackomaticMock = {\n      track: sinon.stub()\n    }\n  })\n\n  afterEach(() => {\n    trackomaticMock = null\n  })\n\n  it('stores a reference to the instance of Trackomatic as this.__trackomatic__', function() {\n    let plugin = new Plugin(trackomaticMock)\n\n    assert.equal(plugin.__trackomatic__, trackomaticMock)\n  })\n\n  it('provides a method that proxies Trackomatic.track() as this.track()', function() {\n    let plugin = new Plugin(trackomaticMock)\n    let params = {}\n\n    plugin.track(params)\n\n    assert(trackomaticMock.track.calledWith(params))\n  })\n})\n"
+    "content": "import assert from 'assert'\nimport Plugin from '../plugin'\n\n/** @test { Plugin } */\ndescribe('Plugin', function() {\n  let trackomaticMock\n\n  beforeEach(() => {\n    trackomaticMock = {\n      track: sinon.stub()\n    }\n  })\n\n  afterEach(() => {\n    trackomaticMock = null\n  })\n\n  it('stores a reference to the instance of Trackomatic as this.__trackomatic__', function() {\n    let plugin = new Plugin(trackomaticMock)\n\n    assert.equal(plugin.__trackomatic__, trackomaticMock)\n  })\n\n  it('provides a method that proxies Trackomatic.track() as this.track()', function() {\n    let plugin = new Plugin(trackomaticMock)\n    let params = {}\n\n    plugin.track(params)\n\n    assert(trackomaticMock.track.calledWith(params))\n  })\n})\n"
   },
   {
     "kind": "testDescribe",
@@ -2575,7 +2575,16 @@
     "longname": "src/__tests__/plugin.test.js~describe0",
     "access": null,
     "description": "Plugin",
-    "lineNumber": 4
+    "lineNumber": 5,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{ Plugin }"
+      }
+    ],
+    "testTargets": [
+      " Plugin "
+    ]
   },
   {
     "kind": "testIt",
@@ -2588,7 +2597,7 @@
     "longname": "src/__tests__/plugin.test.js~describe0.it1",
     "access": null,
     "description": "stores a reference to the instance of Trackomatic as this.__trackomatic__",
-    "lineNumber": 17
+    "lineNumber": 18
   },
   {
     "kind": "testIt",
@@ -2601,7 +2610,7 @@
     "longname": "src/__tests__/plugin.test.js~describe0.it2",
     "access": null,
     "description": "provides a method that proxies Trackomatic.track() as this.track()",
-    "lineNumber": 23
+    "lineNumber": 24
   },
   {
     "kind": "testFile",
@@ -2613,7 +2622,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import assert from 'assert'\nimport Trackomatic from '../trackomatic'\n\ndescribe('Trackomatic', function() {\n  let trackerMock = null\n\n  beforeEach(() => {\n    trackerMock = {\n      get: sinon.stub()\n    }\n  })\n\n  it('stores the provided tracker', function() {\n    let tracker = {}\n    let instance = new Trackomatic(tracker)\n\n    assert.equal(instance.tracker, tracker)\n  })\n\n  it('extends default config settings with provided options', function() {\n    let options = { redirectDelay: 1 }\n    let instance = new Trackomatic({}, options)\n\n    assert.equal(instance.options.redirectDelay, 1)\n  })\n\n  it('converts configured `files` and `networks` options into RegExp objects', function() {\n    let options = { files: [ '.pdf', '.swf' ] }\n    let instance = new Trackomatic({}, options)\n\n    assert(instance.options.files instanceof RegExp)\n    assert(instance.options.files.test('foo.pdf'))\n  })\n\n  it('warns when dataLayer is undefined if options.debug is true', function() {\n    let stub = sinon.stub(window.console, 'log')\n\n    let options = { debug: 1 }\n    let instance = new Trackomatic(trackerMock, options)\n\n    // Trackomatic.boot is normally called in response to domready so\n    // we just call it directly in order to simulate this\n    instance.boot()\n\n    assert(stub.called)\n  })\n\n  it('prepends the prefix to the Category field of tracking calls if options.prefix is not empty', function() {\n    let options = { prefix: 'test' }\n    let instance = new Trackomatic(trackerMock, options)\n\n    // Trackomatic.boot is normally called in response to domready so\n    // we just call it directly in order to simulate this\n    let prefixed = instance.prefix({ category: 'Category' })\n\n    assert.equal(prefixed.category, 'test - Category')\n  })\n})\n"
+    "content": "import assert from 'assert'\nimport Trackomatic from '../trackomatic'\n\n/** @test { Trackomatic } */\ndescribe('Trackomatic', function() {\n  let trackerMock = null\n\n  beforeEach(() => {\n    trackerMock = {\n      get: sinon.stub()\n    }\n  })\n\n  it('stores the provided tracker', function() {\n    let tracker = {}\n    let instance = new Trackomatic(tracker)\n\n    assert.equal(instance.tracker, tracker)\n  })\n\n  it('extends default config settings with provided options', function() {\n    let options = { redirectDelay: 1 }\n    let instance = new Trackomatic({}, options)\n\n    assert.equal(instance.options.redirectDelay, 1)\n  })\n\n  it('converts configured `files` and `networks` options into RegExp objects', function() {\n    let options = { files: [ '.pdf', '.swf' ] }\n    let instance = new Trackomatic({}, options)\n\n    assert(instance.options.files instanceof RegExp)\n    assert(instance.options.files.test('foo.pdf'))\n  })\n\n  it('warns when dataLayer is undefined if options.debug is true', function() {\n    let stub = sinon.stub(window.console, 'log')\n\n    let options = { debug: 1 }\n    let instance = new Trackomatic(trackerMock, options)\n\n    // Trackomatic.boot is normally called in response to domready so\n    // we just call it directly in order to simulate this\n    instance.boot()\n\n    assert(stub.called)\n  })\n\n  it('prepends the prefix to the Category field of tracking calls if options.prefix is not empty', function() {\n    let options = { prefix: 'test' }\n    let instance = new Trackomatic(trackerMock, options)\n\n    // Trackomatic.boot is normally called in response to domready so\n    // we just call it directly in order to simulate this\n    let prefixed = instance.prefix({ category: 'Category' })\n\n    assert.equal(prefixed.category, 'test - Category')\n  })\n})\n"
   },
   {
     "kind": "testDescribe",
@@ -2626,7 +2635,16 @@
     "longname": "src/__tests__/trackomatic.test.js~describe3",
     "access": null,
     "description": "Trackomatic",
-    "lineNumber": 4
+    "lineNumber": 5,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{ Trackomatic }"
+      }
+    ],
+    "testTargets": [
+      " Trackomatic "
+    ]
   },
   {
     "kind": "testIt",
@@ -2639,7 +2657,7 @@
     "longname": "src/__tests__/trackomatic.test.js~describe3.it4",
     "access": null,
     "description": "stores the provided tracker",
-    "lineNumber": 13
+    "lineNumber": 14
   },
   {
     "kind": "testIt",
@@ -2652,7 +2670,7 @@
     "longname": "src/__tests__/trackomatic.test.js~describe3.it5",
     "access": null,
     "description": "extends default config settings with provided options",
-    "lineNumber": 20
+    "lineNumber": 21
   },
   {
     "kind": "testIt",
@@ -2665,7 +2683,7 @@
     "longname": "src/__tests__/trackomatic.test.js~describe3.it6",
     "access": null,
     "description": "converts configured `files` and `networks` options into RegExp objects",
-    "lineNumber": 27
+    "lineNumber": 28
   },
   {
     "kind": "testIt",
@@ -2678,7 +2696,7 @@
     "longname": "src/__tests__/trackomatic.test.js~describe3.it7",
     "access": null,
     "description": "warns when dataLayer is undefined if options.debug is true",
-    "lineNumber": 35
+    "lineNumber": 36
   },
   {
     "kind": "testIt",
@@ -2691,7 +2709,7 @@
     "longname": "src/__tests__/trackomatic.test.js~describe3.it8",
     "access": null,
     "description": "prepends the prefix to the Category field of tracking calls if options.prefix is not empty",
-    "lineNumber": 48
+    "lineNumber": 49
   },
   {
     "kind": "testFile",
@@ -2703,7 +2721,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import assert from 'assert'\nimport util from '../util'\n\ndescribe('util', function() {\n\n  describe('createAnchor()', function() {\n    it('creates an anchor node and sets the href', function() {\n      let anchor = util.createAnchor('http://foo.com/')\n      let proto = Object.prototype.toString.call(anchor)\n\n      assert.equal(anchor.href, 'http://foo.com/')\n      assert.equal(proto, '[object HTMLAnchorElement]')\n    })\n  })\n\n  describe('getPathname()', function() {\n    it('extracts the pathname from a url', function() {\n      let pathname = util.getPathname('http://foo.com/bar/baz')\n      assert.equal(pathname, '/bar/baz')\n    })\n  })\n\n  describe('slugify()', function() {\n    it('converts a string with spaces into a suitable all lowercase slug', function() {\n      let result = util.slugify('fOO bar BAz')\n      assert.equal(result, 'foo-bar-baz')\n    })\n\n    it('removes non-word characters but leaves numbers intact', function() {\n      let result = util.slugify('foo *@& !bar. baz')\n      assert.equal(result, 'foo-bar-baz')\n    })\n\n    it('converts double hyphens to single hyphens and prunes hypens from the start and end', function() {\n      let result = util.slugify('------foo--bar baz-')\n      assert.equal(result, 'foo-bar-baz')\n    })\n  })\n\n  describe('callOnce()', function() {\n    it('returns a wrapped function that is guarded from being invoked more than once', function() {\n      let stub = sinon.stub()\n      let wrapped = util.callOnce(stub)\n\n      wrapped()\n      wrapped()\n      wrapped()\n\n      assert(stub.calledOnce)\n    })\n  })\n})\n"
+    "content": "import assert from 'assert'\nimport util from '../util'\n\n/** @test { Util } */\ndescribe('util', function() {\n\n  describe('createAnchor()', function() {\n    it('creates an anchor node and sets the href', function() {\n      let anchor = util.createAnchor('http://foo.com/')\n      let proto = Object.prototype.toString.call(anchor)\n\n      assert.equal(anchor.href, 'http://foo.com/')\n      assert.equal(proto, '[object HTMLAnchorElement]')\n    })\n  })\n\n  describe('getPathname()', function() {\n    it('extracts the pathname from a url', function() {\n      let pathname = util.getPathname('http://foo.com/bar/baz')\n      assert.equal(pathname, '/bar/baz')\n    })\n  })\n\n  describe('slugify()', function() {\n    it('converts a string with spaces into a suitable all lowercase slug', function() {\n      let result = util.slugify('fOO bar BAz')\n      assert.equal(result, 'foo-bar-baz')\n    })\n\n    it('removes non-word characters but leaves numbers intact', function() {\n      let result = util.slugify('foo *@& !bar. baz')\n      assert.equal(result, 'foo-bar-baz')\n    })\n\n    it('converts double hyphens to single hyphens and prunes hypens from the start and end', function() {\n      let result = util.slugify('------foo--bar baz-')\n      assert.equal(result, 'foo-bar-baz')\n    })\n  })\n\n  describe('callOnce()', function() {\n    it('returns a wrapped function that is guarded from being invoked more than once', function() {\n      let stub = sinon.stub()\n      let wrapped = util.callOnce(stub)\n\n      wrapped()\n      wrapped()\n      wrapped()\n\n      assert(stub.calledOnce)\n    })\n  })\n})\n"
   },
   {
     "kind": "testDescribe",
@@ -2716,7 +2734,16 @@
     "longname": "src/__tests__/util.test.js~describe9",
     "access": null,
     "description": "util",
-    "lineNumber": 4
+    "lineNumber": 5,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{ Util }"
+      }
+    ],
+    "testTargets": [
+      " Util "
+    ]
   },
   {
     "kind": "testDescribe",
@@ -2729,7 +2756,7 @@
     "longname": "src/__tests__/util.test.js~describe9.describe10",
     "access": null,
     "description": "createAnchor()",
-    "lineNumber": 6
+    "lineNumber": 7
   },
   {
     "kind": "testIt",
@@ -2742,7 +2769,7 @@
     "longname": "src/__tests__/util.test.js~describe9.describe10.it11",
     "access": null,
     "description": "creates an anchor node and sets the href",
-    "lineNumber": 7
+    "lineNumber": 8
   },
   {
     "kind": "testDescribe",
@@ -2755,7 +2782,7 @@
     "longname": "src/__tests__/util.test.js~describe9.describe12",
     "access": null,
     "description": "getPathname()",
-    "lineNumber": 16
+    "lineNumber": 17
   },
   {
     "kind": "testIt",
@@ -2768,7 +2795,7 @@
     "longname": "src/__tests__/util.test.js~describe9.describe12.it13",
     "access": null,
     "description": "extracts the pathname from a url",
-    "lineNumber": 17
+    "lineNumber": 18
   },
   {
     "kind": "testDescribe",
@@ -2781,7 +2808,7 @@
     "longname": "src/__tests__/util.test.js~describe9.describe14",
     "access": null,
     "description": "slugify()",
-    "lineNumber": 23
+    "lineNumber": 24
   },
   {
     "kind": "testIt",
@@ -2794,7 +2821,7 @@
     "longname": "src/__tests__/util.test.js~describe9.describe14.it15",
     "access": null,
     "description": "converts a string with spaces into a suitable all lowercase slug",
-    "lineNumber": 24
+    "lineNumber": 25
   },
   {
     "kind": "testIt",
@@ -2807,7 +2834,7 @@
     "longname": "src/__tests__/util.test.js~describe9.describe14.it16",
     "access": null,
     "description": "removes non-word characters but leaves numbers intact",
-    "lineNumber": 29
+    "lineNumber": 30
   },
   {
     "kind": "testIt",
@@ -2820,7 +2847,7 @@
     "longname": "src/__tests__/util.test.js~describe9.describe14.it17",
     "access": null,
     "description": "converts double hyphens to single hyphens and prunes hypens from the start and end",
-    "lineNumber": 34
+    "lineNumber": 35
   },
   {
     "kind": "testDescribe",
@@ -2833,7 +2860,7 @@
     "longname": "src/__tests__/util.test.js~describe9.describe18",
     "access": null,
     "description": "callOnce()",
-    "lineNumber": 40
+    "lineNumber": 41
   },
   {
     "kind": "testIt",
@@ -2846,6 +2873,6 @@
     "longname": "src/__tests__/util.test.js~describe9.describe18.it19",
     "access": null,
     "description": "returns a wrapped function that is guarded from being invoked more than once",
-    "lineNumber": 41
+    "lineNumber": 42
   }
 ]

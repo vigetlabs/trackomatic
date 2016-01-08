@@ -420,56 +420,56 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "",
-    "test-file/src/__tests__/plugin.test.js.html#lineNumber4",
+    " plugin   plugin , plugin ",
+    "test-file/src/__tests__/plugin.test.js.html#lineNumber5",
     "Plugin",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/plugin.test.js.html#lineNumber23",
+    "test-file/src/__tests__/plugin.test.js.html#lineNumber24",
     "Plugin provides a method that proxies Trackomatic.track() as this.track()",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/plugin.test.js.html#lineNumber17",
+    "test-file/src/__tests__/plugin.test.js.html#lineNumber18",
     "Plugin stores a reference to the instance of Trackomatic as this.__trackomatic__",
     "test"
   ],
   [
-    "",
-    "test-file/src/__tests__/trackomatic.test.js.html#lineNumber4",
+    " trackomatic   trackomatic , trackomatic ",
+    "test-file/src/__tests__/trackomatic.test.js.html#lineNumber5",
     "Trackomatic",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/trackomatic.test.js.html#lineNumber27",
+    "test-file/src/__tests__/trackomatic.test.js.html#lineNumber28",
     "Trackomatic converts configured `files` and `networks` options into RegExp objects",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/trackomatic.test.js.html#lineNumber20",
+    "test-file/src/__tests__/trackomatic.test.js.html#lineNumber21",
     "Trackomatic extends default config settings with provided options",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/trackomatic.test.js.html#lineNumber48",
+    "test-file/src/__tests__/trackomatic.test.js.html#lineNumber49",
     "Trackomatic prepends the prefix to the Category field of tracking calls if options.prefix is not empty",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/trackomatic.test.js.html#lineNumber13",
+    "test-file/src/__tests__/trackomatic.test.js.html#lineNumber14",
     "Trackomatic stores the provided tracker",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/trackomatic.test.js.html#lineNumber35",
+    "test-file/src/__tests__/trackomatic.test.js.html#lineNumber36",
     "Trackomatic warns when dataLayer is undefined if options.debug is true",
     "test"
   ],
@@ -816,68 +816,68 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "",
-    "test-file/src/__tests__/util.test.js.html#lineNumber4",
+    " util   util , util ",
+    "test-file/src/__tests__/util.test.js.html#lineNumber5",
     "util",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/util.test.js.html#lineNumber40",
+    "test-file/src/__tests__/util.test.js.html#lineNumber41",
     "util callOnce()",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/util.test.js.html#lineNumber41",
+    "test-file/src/__tests__/util.test.js.html#lineNumber42",
     "util callOnce() returns a wrapped function that is guarded from being invoked more than once",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/util.test.js.html#lineNumber6",
+    "test-file/src/__tests__/util.test.js.html#lineNumber7",
     "util createAnchor()",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/util.test.js.html#lineNumber7",
+    "test-file/src/__tests__/util.test.js.html#lineNumber8",
     "util createAnchor() creates an anchor node and sets the href",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/util.test.js.html#lineNumber16",
+    "test-file/src/__tests__/util.test.js.html#lineNumber17",
     "util getPathname()",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/util.test.js.html#lineNumber17",
+    "test-file/src/__tests__/util.test.js.html#lineNumber18",
     "util getPathname() extracts the pathname from a url",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/util.test.js.html#lineNumber23",
+    "test-file/src/__tests__/util.test.js.html#lineNumber24",
     "util slugify()",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/util.test.js.html#lineNumber24",
+    "test-file/src/__tests__/util.test.js.html#lineNumber25",
     "util slugify() converts a string with spaces into a suitable all lowercase slug",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/util.test.js.html#lineNumber34",
+    "test-file/src/__tests__/util.test.js.html#lineNumber35",
     "util slugify() converts double hyphens to single hyphens and prunes hypens from the start and end",
     "test"
   ],
   [
     "",
-    "test-file/src/__tests__/util.test.js.html#lineNumber29",
+    "test-file/src/__tests__/util.test.js.html#lineNumber30",
     "util slugify() removes non-word characters but leaves numbers intact",
     "test"
   ]
