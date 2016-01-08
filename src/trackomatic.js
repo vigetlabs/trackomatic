@@ -3,7 +3,7 @@ const plugins = require('./plugins')
 const config  = require('./config')
 const util    = require('./util')
 
-const defaultTrackParams = require('./trackParams')
+const defaults = require('./trackParams')
 
 /**
  * When called with `new`, creates a new instance of the Trackomatic analytics class
@@ -76,7 +76,7 @@ class Trackomatic {
    * @return { Void }
    **/
   track(params) {
-    params = this.prefix({ ...defaultTrackParams, ...params })
+    params = this.prefix({ ...defaults, ...params })
 
     this.notifyGA(params)
     this.notifyGTM(params)

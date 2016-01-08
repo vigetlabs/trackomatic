@@ -1,6 +1,7 @@
 import assert from 'assert'
 import util from '../util'
 
+/** @test { Util } */
 describe('util', function() {
 
   describe('createAnchor()', function() {

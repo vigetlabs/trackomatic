@@ -149,8 +149,8 @@ In order to deploy Trackomatic to S3, you'll need to setup a few environment var
 
 Then open `.env` and fill in the Amazon S3 `ACCESS_KEY_ID` and `SECRET_ACCESS_KEY`.
 
-After that you should be set up to deploy to S3.
+After that you should be set up to deploy to S3 by issuing the following command:
 
     $ cap deploy
 
-This will run through `./bin/build` creating the correct directory under `public` as well as handle symlinking the `latest` directory. Finally the `public` folder will by sync-ed to S3.
+This will run through `./bin/build` creating a version directory if needed under `dist` as well as handle symlinking the `latest` directory. Finally the `dist` folder will be sync-ed to S3.

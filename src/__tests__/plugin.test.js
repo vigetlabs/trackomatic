@@ -1,6 +1,7 @@
 import assert from 'assert'
 import Plugin from '../plugin'
 
+/** @test { Plugin } */
 describe('Plugin', function() {
   let trackomaticMock
 

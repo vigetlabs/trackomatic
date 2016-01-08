@@ -17,5 +17,7 @@ then
     echo "Goodbye."
     exit
 else
-    ./node_modules/.bin/dotenv ./bin/deploy
+    npm run docs
+    ./node_modules/.bin/dotenv ./bin/deploy-docs
+    cap deploy
 fi

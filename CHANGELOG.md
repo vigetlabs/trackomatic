@@ -5,7 +5,8 @@ Do not forget to tag each release!
 ## 1.1.1 (current)
 - Added ./bin/install script for setting up project dependencies
 - Better information in README
-- Added ./bin/release for triggering `cap deploy`
+- Added ./bin/release for triggering docs, build, push docs to gh-pages, and push lib to S3
+- Added Placeholder Intro to documentation
 
 ## 1.1.0
 - Large refactor of codebase modularity, testability focus

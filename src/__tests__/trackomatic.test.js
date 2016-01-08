@@ -1,6 +1,7 @@
 import assert from 'assert'
 import Trackomatic from '../trackomatic'
 
+/** @test { Trackomatic } */
 describe('Trackomatic', function() {
   let trackerMock = null
 
