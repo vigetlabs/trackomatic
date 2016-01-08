@@ -773,7 +773,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "const BasePlugin = require('../plugin')\n\n/**\n * Tracks link clicks\n *\n * @extends { Plugin }\n */\nclass LinkTrackingPlugin extends BasePlugin {\n\n  /**\n   * The setup function for this plugin\n   *\n   * @returns { Void }\n   */\n  install() {\n    document.documentElement.addEventListener('click', this.onLinkClick.bind(this), false)\n  }\n\n  /**\n   * Callback for link click events\n   *\n   * @param   { Object } e - the event object\n   * @returns { Void }\n   **/\n  onLinkClick(e) {\n    let link = this.__trackomatic__.util.getLink(e.target || e.srcElement)\n\n    if (link) {\n      let data = this.getVisitData(e, link)\n\n      if (data) {\n        this.interceptVisit(e, link, data)\n      }\n    }\n  }\n\n  /**\n   * Extracts tracking parameters from a clicked link\n   *\n   * @param   { Object } e    - the event object\n   * @param   { Node }   link - the node that was clicked\n   * @returns { Object }      - the extracted category, action, and label for this link\n   **/\n  getVisitData(e, link) {\n    let { util, config, options } = this.__trackomatic__\n\n    let url        = link.href\n    let keyCode    = util.keyCode(e)\n    let rightClick = keyCode === config.KEYS.RIGHT_CLICK\n    let metaKey    = e.ctrlKey || e.metaKey || e.altKey\n\n    // unless right click or a modifier key is pressed, return the visit data\n    if (!rightClick && !metaKey) {\n      let extractedAttributes = this.extractAutoTrackingAttributes(url)\n\n      if (extractedAttributes) {\n        let map = { ...extractedAttributes, label: url }\n        let trackomaticAttributes = link.getAttribute('data-trackomatic')\n\n        if (trackomaticAttributes) {\n          let [category, action, label] = trackomaticAttributes.split(options.delimiter)\n\n          map.category = category || map.category\n          map.action   = action   || map.action\n          map.label    = label    || map.label\n        }\n\n        return map\n      }\n    }\n  }\n\n  /**\n   * Extracts a tracking category and action based on the url of a clicked link\n   *\n   * @param   { String }        url - The href of the clicked link\n   * @returns { Void | Object }     - Extracted parameters based on matching of url\n   **/\n  extractAutoTrackingAttributes(url) {\n    let { util, config, options } = this.__trackomatic__\n    let differentHost = util.getHost(url) !== util.getHost(window.location.href)\n\n    if (url.match(options.files)) {\n      return { category: 'File Click', action: 'click' }\n    } else if (url.match(config.REGEX.MAILTO_HREF)) {\n      return { category: 'Mailto Click', action: 'click' }\n    } else if (url.match(config.REGEX.TEL_HREF)) {\n      return { category: 'Telephone Click', action: 'click' }\n    } else if (differentHost) {\n      if (url.match(options.networks)) {\n        return { category: 'Social Media Click', action: 'click' }\n      } else {\n        return { category: 'Site Exit', action: util.getHost(url) }\n      }\n    }\n  }\n\n  /**\n   * Reports tracking data for the clicked link and then redirects to the link url.\n   *\n   * @param   { Object } e      - The event object\n   * @param   { Node }   link   - The clicked link\n   * @param   { Object } params - Category, action, and label\n   * @returns { Void }\n   **/\n  interceptVisit(e, link, { category, action, label }) {\n    let { config, options } = this.__trackomatic__\n\n    let delay    = Math.min(options.redirectDelay, config.MAX_REDIRECT_DELAY)\n    let redirect = this.createRedirect(link)\n\n    // track visit\n    this.track({ category, action, label, hitCallback : redirect })\n\n    // in case the GA hitCallback doesn't fire, redirect\n    // to the clicked link after the configured delay\n    setTimeout(redirect, delay)\n\n    // prevent the default link click behavior (redirect)\n    e.preventDefault()\n  }\n\n  /**\n   * Creates a function that will redirect to the given url or if dev/debug mode\n   * is on this function will return a noop. The redirect function is protected\n   * by callOnce which prevents it from being called multiple times.\n   *\n   * @param   { Node }            link - The clicked link\n   * @returns { Void | Function }      - Protected redirect function\n   **/\n  createRedirect(link) {\n    let { util, options } = this.__trackomatic__\n\n    if (__DEV__ && options.debug) {\n      return util.noop\n    }\n\n    // ensure that this redirect callback can be called no more than once\n    return util.callOnce(util.createNavigationHandler(link))\n  }\n\n}\n\nexport default LinkTrackingPlugin\n"
+    "content": "const BasePlugin = require('../plugin')\n\n/**\n * Tracks link clicks\n *\n * @extends { Plugin }\n */\nclass LinkTrackingPlugin extends BasePlugin {\n\n  /**\n   * The setup function for this plugin\n   *\n   * @returns { Void }\n   */\n  install() {\n    document.documentElement.addEventListener('click', this.onLinkClick.bind(this), false)\n  }\n\n  /**\n   * Callback for link click events\n   *\n   * @param   { Object } e - the event object\n   * @returns { Void }\n   **/\n  onLinkClick(e) {\n    const link = this.__trackomatic__.util.getLink(e.target || e.srcElement)\n\n    if (link) {\n      const data = this.getVisitData(e, link)\n\n      if (data) {\n        this.interceptVisit(e, link, data)\n      }\n    }\n  }\n\n  /**\n   * Extracts tracking parameters from a clicked link\n   *\n   * @param   { Object } e    - the event object\n   * @param   { Node }   link - the node that was clicked\n   * @returns { Object }      - the extracted category, action, and label for this link\n   **/\n  getVisitData(e, link) {\n    const { util, config, options } = this.__trackomatic__\n\n    const url = link.href\n\n    // return if no href\n    if (!url) return\n\n    const keyCode    = util.keyCode(e)\n    const rightClick = keyCode === config.KEYS.RIGHT_CLICK\n    const metaKey    = e.ctrlKey || e.metaKey || e.altKey\n\n    // unless right click or a modifier key is pressed, return the visit data\n    if (!rightClick && !metaKey) {\n      const extractedAttributes = this.extractAutoTrackingAttributes(url)\n\n      if (extractedAttributes) {\n        const map = { ...extractedAttributes, label: url }\n        const trackomaticAttributes = link.getAttribute('data-trackomatic')\n\n        if (trackomaticAttributes) {\n          const [category, action, label] = trackomaticAttributes.split(options.delimiter)\n\n          map.category = category || map.category\n          map.action   = action   || map.action\n          map.label    = label    || map.label\n        }\n\n        return map\n      }\n    }\n  }\n\n  /**\n   * Extracts a tracking category and action based on the url of a clicked link\n   *\n   * @param   { String }        url - The href of the clicked link\n   * @returns { Void | Object }     - Extracted parameters based on matching of url\n   **/\n  extractAutoTrackingAttributes(url) {\n    const { util, config, options } = this.__trackomatic__\n    const differentHost = (util.getHost(url) !== util.getHost(window.location.href))\n\n    if (url.match(options.files)) {\n      return { category: 'File Click', action: 'click' }\n    } else if (url.match(config.REGEX.MAILTO_HREF)) {\n      return { category: 'Mailto Click', action: 'click' }\n    } else if (url.match(config.REGEX.TEL_HREF)) {\n      return { category: 'Telephone Click', action: 'click' }\n    } else if (differentHost) {\n      if (url.match(options.networks)) {\n        return { category: 'Social Media Click', action: 'click' }\n      } else {\n        return { category: 'Site Exit', action: util.getHost(url) }\n      }\n    }\n  }\n\n  /**\n   * Reports tracking data for the clicked link and then redirects to the link url.\n   *\n   * @param   { Object } e      - The event object\n   * @param   { Node }   link   - The clicked link\n   * @param   { Object } params - Category, action, and label\n   * @returns { Void }\n   **/\n  interceptVisit(e, link, { category, action, label }) {\n    const { config, options } = this.__trackomatic__\n\n    const delay    = Math.min(options.redirectDelay, config.MAX_REDIRECT_DELAY)\n    const redirect = this.createRedirect(link)\n\n    // track visit\n    this.track({ category, action, label, hitCallback : redirect })\n\n    // in case the GA hitCallback doesn't fire, redirect\n    // to the clicked link after the configured delay\n    setTimeout(redirect, delay)\n\n    // prevent the default link click behavior (redirect)\n    e.preventDefault()\n  }\n\n  /**\n   * Creates a function that will redirect to the given url or if dev/debug mode\n   * is on this function will return a noop. The redirect function is protected\n   * by callOnce which prevents it from being called multiple times.\n   *\n   * @param   { Node }            link - The clicked link\n   * @returns { Void | Function }      - Protected redirect function\n   **/\n  createRedirect(link) {\n    const { util, options } = this.__trackomatic__\n\n    if (__DEV__ && options.debug) {\n      return util.noop\n    }\n\n    // ensure that this redirect callback can be called no more than once\n    return util.callOnce(util.createNavigationHandler(link))\n  }\n\n}\n\nexport default LinkTrackingPlugin\n"
   },
   {
     "kind": "variable",
@@ -935,7 +935,7 @@
     "longname": "src/plugins/linkTrackingPlugin.js~LinkTrackingPlugin#extractAutoTrackingAttributes",
     "access": null,
     "description": "Extracts a tracking category and action based on the url of a clicked link",
-    "lineNumber": 79,
+    "lineNumber": 83,
     "unknown": [
       {
         "tagName": "@returns",
@@ -974,7 +974,7 @@
     "longname": "src/plugins/linkTrackingPlugin.js~LinkTrackingPlugin#interceptVisit",
     "access": null,
     "description": "Reports tracking data for the clicked link and then redirects to the link url.",
-    "lineNumber": 106,
+    "lineNumber": 110,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1032,7 +1032,7 @@
     "longname": "src/plugins/linkTrackingPlugin.js~LinkTrackingPlugin#createRedirect",
     "access": null,
     "description": "Creates a function that will redirect to the given url or if dev/debug mode\nis on this function will return a noop. The redirect function is protected\nby callOnce which prevents it from being called multiple times.",
-    "lineNumber": 131,
+    "lineNumber": 135,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1074,7 +1074,7 @@
     "importPath": "trackomatic/src/plugins/linkTrackingPlugin.js",
     "importStyle": "linkTrackingPlugin",
     "description": null,
-    "lineNumber": 144,
+    "lineNumber": 148,
     "undocument": true,
     "type": {
       "types": [
@@ -1425,7 +1425,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "const ready   = require('domready')\nconst plugins = require('./plugins')\nconst config  = require('./config')\nconst util    = require('./util')\n\nconst defaultTrackParams = require('./trackParams')\n\n/**\n * When called with `new`, creates a new instance of the Trackomatic analytics class\n */\nclass Trackomatic {\n  /**\n   * Trackomatic class constructor\n   *\n   * @param  { Object } tracker - Tracker passed in by Google Analytics\n   * @param  { Object } options - Trackomatic configuration object\n   * @return { Void }\n   **/\n  constructor(tracker, options={}) {\n    window._trackomatic = window._trackomatic || this\n    this.util    = util\n    this.config  = config\n    this.tracker = tracker\n    this.options = this.prepare({ ...config.DEFAULTS, ...options })\n\n    ready(this.boot.bind(this))\n  }\n\n  /**\n   * Prepares the Trackomatic options by converting `options.networks`\n   * and `options.files` from Strings or Array<String> into RegExp\n   *\n   * @param  { Object } options - Trackomatic's options object\n   * @return { Object }         - The prepared options object\n   **/\n  prepare(options) {\n    return {\n      ...options,\n      networks : util.regexify(options.networks),\n      files    : util.regexify(options.files)\n    }\n  }\n\n  /**\n   * Loads all of Trackomatic's plugins\n   *\n   * @return { Void }\n   **/\n  boot() {\n    if (__DEV__ && this.options.debug) {\n      console.log(\n        'Loaded trackomatic on tracker ' + this.tracker.get('name') +\n        ' with the config object ' + JSON.stringify(this.options)\n      )\n\n      // window.dataLayer is provided by GTM\n      if (typeof dataLayer === typeof undefined) {\n        console.warn(\n          'Warning: Trackomatic could not find the global \\\n          \"dataLayer\" object from GTM. Did you load GTM first?'\n        )\n      }\n    }\n\n    for (let key in plugins) {\n      new plugins[key](this)\n    }\n  }\n\n  /**\n   * Sends track parameters to the configured Google Analytics account via\n   * the tracker that was passed to the Trackomatic constructor\n   *\n   * @param  { Object } params - Object of keys and values to send to GA/GTM\n   * @return { Void }\n   **/\n  track(params) {\n    params = this.prefix({ ...defaultTrackParams, ...params })\n\n    this.notifyGA(params)\n    this.notifyGTM(params)\n  }\n\n  /**\n   * When given a trackomatic tracking object, this function will add the\n   * configured prefix to the `category` property\n   *\n   * @param  { Object } params - Tracking object to be prefixed\n   * @return { Object }        - The tracking object with prefixed properties\n   **/\n  prefix({ category, ...params }) {\n    let { prefix } = this.options\n    return { ...params, category: `${ prefix } - ${ category }` }\n  }\n\n  /**\n   * Provided `window.dataLayer` exists, `notifyGTM` will push values to it\n   *\n   * @param  { Object } params - Object of keys and values to send to GTM\n   * @return { Void }\n   **/\n  notifyGTM(params) {\n    // extract params that shouldn't be sent to GTM\n    let { nonInteraction, hitType, hitCallback, ...GTMParams } = params\n    let GTMLoaded = typeof dataLayer !== typeof undefined\n\n    if (__DEV__ && this.options.debug) {\n      console.log('dataLayer.push(..): ')\n      console.log(JSON.stringify(GTMParams, null, '  '))\n      return\n    }\n\n    GTMLoaded && dataLayer.push(GTMParams)\n  }\n\n  /**\n   * Sends track parameters to the configured Google Analytics account via\n   * the tracker that was passed to the Trackomatic constructor\n   *\n   * @param  { Object } params - Object of keys and values to send to GTM\n   * @return { Void }\n   **/\n  notifyGA(params) {\n    let GAParams = [\n      params.hitType,\n      params.category,\n      params.action,\n      params.label,\n      params.value,\n      {\n        nonInteraction : params.nonInteraction,\n        hitCallback    : params.hitCallback\n      }\n    ]\n\n    if (__DEV__ && this.options.debug) {\n      console.log('tracker.send(..): ')\n      console.log(JSON.stringify(GAParams, null, '  '))\n      return\n    }\n\n    this.tracker.send(...GAParams)\n  }\n}\n\nexport default Trackomatic\n"
+    "content": "const ready   = require('domready')\nconst plugins = require('./plugins')\nconst config  = require('./config')\nconst util    = require('./util')\n\nconst defaultTrackParams = require('./trackParams')\n\n/**\n * When called with `new`, creates a new instance of the Trackomatic analytics class\n */\nclass Trackomatic {\n  /**\n   * Trackomatic class constructor\n   *\n   * @param  { Object } tracker - Tracker passed in by Google Analytics\n   * @param  { Object } options - Trackomatic configuration object\n   * @return { Void }\n   **/\n  constructor(tracker, options={}) {\n    window._trackomatic = window._trackomatic || this\n\n    this.util    = util\n    this.config  = config\n    this.tracker = tracker\n    this.options = this.prepare({ ...config.DEFAULTS, ...options })\n\n    ready(this.boot.bind(this))\n  }\n\n  /**\n   * Prepares the Trackomatic options by converting `options.networks`\n   * and `options.files` from Strings or Array<String> into RegExp\n   *\n   * @param  { Object } options - Trackomatic's options object\n   * @return { Object }         - The prepared options object\n   **/\n  prepare(options) {\n    return {\n      ...options,\n      networks : util.regexify(options.networks),\n      files    : util.regexify(options.files)\n    }\n  }\n\n  /**\n   * Loads all of Trackomatic's plugins\n   *\n   * @return { Void }\n   **/\n  boot() {\n    if (__DEV__ && this.options.debug) {\n      console.log(\n        'Loaded trackomatic on tracker ' + this.tracker.get('name') +\n        ' with the config object ' + JSON.stringify(this.options)\n      )\n\n      // window.dataLayer is provided by GTM\n      if (typeof dataLayer === typeof undefined) {\n        console.warn(\n          'Warning: Trackomatic could not find the global \\\n          \"dataLayer\" object from GTM. Did you load GTM first?'\n        )\n      }\n    }\n\n    for (let key in plugins) {\n      new plugins[key](this)\n    }\n  }\n\n  /**\n   * Sends track parameters to the configured Google Analytics account via\n   * the tracker that was passed to the Trackomatic constructor\n   *\n   * @param  { Object } params - Object of keys and values to send to GA/GTM\n   * @return { Void }\n   **/\n  track(params) {\n    params = this.prefix({ ...defaultTrackParams, ...params })\n\n    this.notifyGA(params)\n    this.notifyGTM(params)\n  }\n\n  /**\n   * When given a trackomatic tracking object, this function will add the\n   * configured prefix to the `category` property\n   *\n   * @param  { Object } params - Tracking object to be prefixed\n   * @return { Object }        - The tracking object with prefixed properties\n   **/\n  prefix({ category, ...params }) {\n    const { prefix } = this.options\n    return { ...params, category: `${ prefix } - ${ category }` }\n  }\n\n  /**\n   * Provided `window.dataLayer` exists, `notifyGTM` will push values to it\n   *\n   * @param  { Object } params - Object of keys and values to send to GTM\n   * @return { Void }\n   **/\n  notifyGTM(params) {\n    // extract params that shouldn't be sent to GTM\n    const { nonInteraction, hitType, hitCallback, ...GTMParams } = params\n    const GTMLoaded = (typeof dataLayer !== typeof undefined)\n\n    if (__DEV__ && this.options.debug) {\n      console.log('dataLayer.push(..): ')\n      console.log(JSON.stringify(GTMParams, null, '  '))\n      return\n    }\n\n    GTMLoaded && dataLayer.push(GTMParams)\n  }\n\n  /**\n   * Sends track parameters to the configured Google Analytics account via\n   * the tracker that was passed to the Trackomatic constructor\n   *\n   * @param  { Object } params - Object of keys and values to send to GTM\n   * @return { Void }\n   **/\n  notifyGA(params) {\n    let GAParams = [\n      params.hitType,\n      params.category,\n      params.action,\n      params.label,\n      params.value,\n      {\n        nonInteraction : params.nonInteraction,\n        hitCallback    : params.hitCallback\n      }\n    ]\n\n    if (__DEV__ && this.options.debug) {\n      console.log('tracker.send(..): ')\n      console.log(JSON.stringify(GAParams, null, '  '))\n      return\n    }\n\n    this.tracker.send(...GAParams)\n  }\n}\n\nexport default Trackomatic\n"
   },
   {
     "kind": "variable",
@@ -1593,7 +1593,7 @@
     "longname": "src/trackomatic.js~Trackomatic#util",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 22,
     "undocument": true,
     "type": {
       "types": [
@@ -1610,7 +1610,7 @@
     "longname": "src/trackomatic.js~Trackomatic#config",
     "access": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 23,
     "undocument": true,
     "type": {
       "types": [
@@ -1627,7 +1627,7 @@
     "longname": "src/trackomatic.js~Trackomatic#tracker",
     "access": null,
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 24,
     "undocument": true,
     "type": {
       "types": [
@@ -1644,7 +1644,7 @@
     "longname": "src/trackomatic.js~Trackomatic#options",
     "access": null,
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 25,
     "undocument": true,
     "type": {
       "types": [
@@ -1661,7 +1661,7 @@
     "longname": "src/trackomatic.js~Trackomatic#prepare",
     "access": null,
     "description": "Prepares the Trackomatic options by converting `options.networks`\nand `options.files` from Strings or Array<String> into RegExp",
-    "lineNumber": 36,
+    "lineNumber": 37,
     "params": [
       {
         "nullable": null,
@@ -1693,7 +1693,7 @@
     "longname": "src/trackomatic.js~Trackomatic#boot",
     "access": null,
     "description": "Loads all of Trackomatic's plugins",
-    "lineNumber": 49,
+    "lineNumber": 50,
     "params": [],
     "return": {
       "nullable": null,
@@ -1714,7 +1714,7 @@
     "longname": "src/trackomatic.js~Trackomatic#track",
     "access": null,
     "description": "Sends track parameters to the configured Google Analytics account via\nthe tracker that was passed to the Trackomatic constructor",
-    "lineNumber": 77,
+    "lineNumber": 78,
     "params": [
       {
         "nullable": null,
@@ -1746,7 +1746,7 @@
     "longname": "src/trackomatic.js~Trackomatic#prefix",
     "access": null,
     "description": "When given a trackomatic tracking object, this function will add the\nconfigured prefix to the `category` property",
-    "lineNumber": 91,
+    "lineNumber": 92,
     "params": [
       {
         "nullable": null,
@@ -1778,7 +1778,7 @@
     "longname": "src/trackomatic.js~Trackomatic#notifyGTM",
     "access": null,
     "description": "Provided `window.dataLayer` exists, `notifyGTM` will push values to it",
-    "lineNumber": 102,
+    "lineNumber": 103,
     "params": [
       {
         "nullable": null,
@@ -1810,7 +1810,7 @@
     "longname": "src/trackomatic.js~Trackomatic#notifyGA",
     "access": null,
     "description": "Sends track parameters to the configured Google Analytics account via\nthe tracker that was passed to the Trackomatic constructor",
-    "lineNumber": 123,
+    "lineNumber": 124,
     "params": [
       {
         "nullable": null,
@@ -1845,7 +1845,7 @@
     "importPath": "trackomatic/src/trackomatic.js",
     "importStyle": "trackomatic",
     "description": null,
-    "lineNumber": 146,
+    "lineNumber": 147,
     "undocument": true,
     "type": {
       "types": [

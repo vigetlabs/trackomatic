@@ -23,7 +23,7 @@
       "expectCount": 8,
       "actualCount": 7,
       "undocumentLines": [
-        144
+        148
       ]
     },
     "src/plugin.js": {
@@ -37,11 +37,11 @@
       "expectCount": 13,
       "actualCount": 8,
       "undocumentLines": [
-        22,
-        24,
         23,
-        146,
-        21
+        25,
+        24,
+        147,
+        22
       ]
     },
     "src/plugins/viewportTrackingPlugin.js": {
