@@ -2,7 +2,7 @@ var project = require('../package')
 
 module.exports = {
   source: './src',
-  destination: './public/' + project.version + '/docs',
+  destination: './docs',
   plugins: [
     {
       name: 'esdoc-es7-plugin'

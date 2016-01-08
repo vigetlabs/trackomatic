@@ -12,7 +12,7 @@ main() {
 	default_email=${GIT_DEPLOY_EMAIL:-}
 
 	#repository to deploy to. must be readable and writable.
-	repo=https://${GIT_DEPLOY_TOKEN}.github.com/vigetlabs/trackomatic.git
+	repo=https://${GIT_DEPLOY_TOKEN}@github.com/vigetlabs/trackomatic.git
 
 	# Parse arg flags
 	while : ; do

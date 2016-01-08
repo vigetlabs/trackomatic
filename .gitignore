@@ -5,3 +5,4 @@ node_modules
 *.map
 *.log
 .env
+docs

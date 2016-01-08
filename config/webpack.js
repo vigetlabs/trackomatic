@@ -13,7 +13,7 @@ var config = {
   },
 
   output: {
-    path: path.resolve(__dirname, '..', 'public', project.version),
+    path: path.resolve(__dirname, '..', 'dist', project.version),
     filename: project.name + '.dev.js'
   },
 
