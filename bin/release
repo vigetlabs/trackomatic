@@ -20,5 +20,5 @@ else
     source .env
     npm run docs
     ./bin/deploy-docs
-    aws s3 sync ./dist s3://$AWS_S3_BUCKET --exclude='*.DS_Store*'
+    aws s3 sync ./dist s3://$AWS_S3_BUCKET --exclude='*.DS_Store*' --acl public-read
 fi
