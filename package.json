@@ -1,6 +1,6 @@
 {
   "name": "trackomatic",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Viget Labs' GA Tracking Extensions",
   "main": "dist/latest/trackomatic.min.js",
   "engines": {
