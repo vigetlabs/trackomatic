@@ -23,10 +23,12 @@ http://code.viget.com/trackomatic
 
 ## Usage
 
+**NOTE** It is highly recommended to use the minified version for production usage.
+
 Trackomatic is published to S3 and served by CloudFront. Urls are scoped by version. You may reference either the unpacked or minified lib based on need. Always used the minified file in production.
 
-https://d1lmnvs8gamzin.cloudfront.net/1.1.0/trackomatic.dev.js
-https://d1lmnvs8gamzin.cloudfront.net/1.1.0/trackomatic.min.js
+https://d1lmnvs8gamzin.cloudfront.net/1.1.1/trackomatic.dev.js
+https://d1lmnvs8gamzin.cloudfront.net/1.1.1/trackomatic.min.js
 
 Additionally, if you are less concerned with changes in reporting or feature-set then you may reference the latest version using the following url.
 
