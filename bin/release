@@ -17,7 +17,8 @@ then
     echo "Goodbye."
     exit
 else
+    source .env
     npm run docs
-    ./node_modules/.bin/dotenv ./bin/deploy-docs
-    cap deploy
+    ./bin/deploy-docs
+    aws s3 sync ./dist s3://$AWS_S3_BUCKET --exclude='*.DS_Store*'
 fi
