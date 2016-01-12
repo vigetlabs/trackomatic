@@ -1,6 +1,6 @@
 ![track-o-matic-logo](https://cloud.githubusercontent.com/assets/1626530/12269511/c77224fa-b91f-11e5-9d06-4627a2d39230.png)
 
-# Trackomatic: Automatic Google Analytics Tracking
+# Trackomatic: A high-performance tracking enhancement for Google Analytics.
 
 * [About](#user-content-about)
 * [Usage](#user-content-usage)
